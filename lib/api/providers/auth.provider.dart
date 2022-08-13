@@ -14,7 +14,7 @@ class AuthProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> authenticate(String email, String password,
       {dynamic isRememberMe}) async {
     Map<String, dynamic> data = {
-      'email': "admin@mail.ci",
+      'pseudo': "admin",
       'password': "password",
       // "remember": isRememberMe ? 1 : 0,
     };
@@ -48,7 +48,7 @@ class AuthProvider extends ChangeNotifier {
 
       result = true;
     } else {
-      message = json.decode(responseAPI.body)["error"];
+      message = json.decode(responseAPI.body)["message"];
     }
 
     return <String, dynamic>{"result": result, "message": message};
@@ -108,8 +108,7 @@ class AuthProvider extends ChangeNotifier {
     prefs = await SharedPreferences.getInstance();
 
     prefs.setString('userId', user.id);
-    prefs.setString('userName', user.name);
-    prefs.setString('userEmail', user.email);
+    prefs.setString('userPseudo', user.pseudo);
     prefs.setString('userToken', user.token);
   }
 

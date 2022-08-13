@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../../api/providers/auth.provider.dart';
+import '../../../utils/helpers.dart';
 
 class FormComponent extends StatefulWidget {
   const FormComponent({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class FormComponent extends StatefulWidget {
 
 class _FormComponentState extends State<FormComponent> {
   TextEditingController loginTextController =
-      TextEditingController(text: 'admin@mail.ci');
+      TextEditingController(text: 'admin');
   TextEditingController pwdTextController =
       TextEditingController(text: 'password');
 
@@ -69,8 +70,8 @@ class _FormComponentState extends State<FormComponent> {
                   : const SizedBox(
                       height: 0,
                     ),
-              // Email
-              Container(  
+              // Pseudo
+              Container(
                 height: screenSize.height * 0.066,
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 decoration: BoxDecoration(
@@ -93,7 +94,7 @@ class _FormComponentState extends State<FormComponent> {
                     });
                   },
                   decoration: const InputDecoration(
-                      hintText: "Email",
+                      hintText: "Pseudo",
                       hintStyle: TextStyle(
                         fontSize: 16,
                         fontFamily: "Arial",
@@ -174,7 +175,7 @@ class _FormComponentState extends State<FormComponent> {
               const SizedBox(
                 height: 10,
               ),
-              //Bouton de connexion
+              //Bouton de connexion + se souvenir de moi
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -304,12 +305,12 @@ class _FormComponentState extends State<FormComponent> {
       //     removePwd: false);
     } else {
       setState(() {
-        isAttemptLogin = true; 
+        isAttemptLogin = true;
       });
 
       AuthProvider authProvider =
           Provider.of<AuthProvider>(context, listen: false);
- 
+
       authProvider
           .authenticate(loginTextController.text, pwdTextController.text)
           .then((Map<String, dynamic> data) {
@@ -322,7 +323,7 @@ class _FormComponentState extends State<FormComponent> {
         if (data['result']) {
           Navigator.pushReplacementNamed(context, "/home");
         } else {
-          _showSnackbar(data['message'], removePwd: false);
+          showSnackbar(context, data['message'], removePwd: false);
         }
       }).onError((error, stackTrace) {
         // print("---- ERROR --- : " + error.toString());
@@ -330,41 +331,42 @@ class _FormComponentState extends State<FormComponent> {
           isAttemptLogin = false;
         });
 
-        _showSnackbar(
-            "Quelque chose s'est mal passé : veuilez réessayer ! Si le problème persiste, contactez le service support", duration:5000);
+        showSnackbar(context,
+            "Quelque chose s'est mal passé : veuilez réessayer ! Si le problème persiste, contactez le service support",
+            duration: 5000);
       });
     }
 
     //
   }
 
-  _showSnackbar(String message, {bool removePwd = true, int duration = 3000}) {
-    final snackBar = SnackBar(
-      backgroundColor: Colors.grey[400],
-      duration: Duration(milliseconds: duration),
-      elevation: 4,
-      content: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.black, ),
-      ),
-      action: SnackBarAction(
-        label: 'OK',
-        textColor: Colors.black,
-        onPressed: () {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        },
-      ),
-    );
+  // _showSnackbar(String message, {bool removePwd = true, int duration = 3000}) {
+  //   final snackBar = SnackBar(
+  //     backgroundColor: Colors.grey[400],
+  //     duration: Duration(milliseconds: duration),
+  //     elevation: 4,
+  //     content: Text(
+  //       message,
+  //       textAlign: TextAlign.center,
+  //       style: const TextStyle(color: Colors.black, ),
+  //     ),
+  //     action: SnackBarAction(
+  //       label: 'OK',
+  //       textColor: Colors.black,
+  //       onPressed: () {
+  //         ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  //       },
+  //     ),
+  //   );
 
-    if (removePwd) {
-      // pwdTextController.text = "";
-    }
+  //   if (removePwd) {
+  //     // pwdTextController.text = "";
+  //   }
 
-    // Find the ScaffoldMessenger in the widget tree
-    // and use it to show a SnackBar.
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  //   // Find the ScaffoldMessenger in the widget tree
+  //   // and use it to show a SnackBar.
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   // fin : Make with love, by JonathanDieke
 }

@@ -1,17 +1,18 @@
 class User {
-  String id = '', name = '', email = '', token = '';
+  String id = '', pseudo = '', token = '';
 
-  User({this.id = '', this.name = '', this.email = '', this.token = ''});
+  User();
+
+  // User(this.id, this.pseudo, this.token);
 
   User.fromJson(Map<String, dynamic> userJson, String userToken) {
     id = userJson["id"];
-    name = userJson["name"];
-    email = userJson["email"];
+    pseudo = userJson["pseudo"];
     token = userToken;
   }
 
   @override
   String toString() {
-    return "Id : $id \nName : $name \nEmail : $email \nToken : $token";
+    return "Id : $id \nPseudo : $pseudo \nToken : $token";
   }
 }

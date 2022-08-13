@@ -23,7 +23,8 @@ class PageView1 extends StatelessWidget {
             horizontal: 10,
           ),
           child: const Text(
-            "Avec vous, nous souhaitons lutter contre les conséquences du diabètes", 
+            "Avec vous, nous souhaitons lutter contre les désastreux effets du diabètes", 
+            // "Avec vous, nous souhaitons lutter contre les conséquences du diabètes", 
             textAlign: TextAlign.center,
             textDirection: TextDirection.ltr,
             style: TextStyle(

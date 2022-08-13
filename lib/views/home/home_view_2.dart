@@ -78,30 +78,51 @@ class _HomeViewState extends State<HomeView> {
                       horizontal: screenSize.width * .07,
                       vertical: screenSize.height * .025,
                     ),
-                    child: Column(
-                      children: [
-                        //Créer une daily data
-                        DailyDataForm(),
-                        // 4 cards : Repas, Sommeil, Activité sportive, Prise d'insuline
-                        GridView.count(
-                          shrinkWrap: true,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          crossAxisCount: 2,
-                          primary: false,
-                          children: <Widget>[
-                            homeCard("Ajouter un repas",
-                                FontAwesomeIcons.bowlFood, "/meal"),
-                            homeCard("Ajouter un temps de sommeil",
-                                FontAwesomeIcons.bed, "/meal"),
-                            homeCard("Ajouter une activité physique",
-                                FontAwesomeIcons.personRunning, "/meal"),
-                            homeCard("Ajouter une prise d'insuline",
-                                FontAwesomeIcons.syringe, "/meal"),
-                          ],
-                        ),
-                      ],
-                    ),
+                    child: FutureBuilder(
+                        future: DailyDataProvider.initialize(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasData) {
+                              return Column(
+                                children: [
+                                  //Créer une daily data
+                                  DailyDataForm(),
+                                  // 4 cards : Repas, Sommeil, Activité sportive, Prise d'insuline
+                                  GridView.count(
+                                    shrinkWrap: true,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    crossAxisCount: 2,
+                                    primary: false,
+                                    children: <Widget>[
+                                      homeCard("Ajouter un repas",
+                                          FontAwesomeIcons.bowlFood, "/meal"),
+                                      homeCard("Ajouter un temps de sommeil",
+                                          FontAwesomeIcons.bed, "/meal"),
+                                      homeCard(
+                                          "Ajouter une activité physique",
+                                          FontAwesomeIcons.personRunning,
+                                          "/meal"),
+                                      homeCard("Ajouter une prise d'insuline",
+                                          FontAwesomeIcons.syringe, "/meal"),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text(
+                                  'Une erreur est survenue : ${snapshot.error}. \n Veuillez conatcter le service support.',
+                                ),
+                              );
+                            }
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }),
                   ),
                 ],
               )
@@ -114,8 +135,7 @@ class _HomeViewState extends State<HomeView> {
 
   homeCard(String title, IconData icon, String attachedView) {
     return Consumer<DailyDataProvider>(
-      builder: (context, dailyDataProvider, child) {
-        print('home notifié');
+      builder: (ontext, dailyDataProvider, child) {
         return dailyDataProvider.isForCurrentDay()
             ? Card(
                 elevation: 2,

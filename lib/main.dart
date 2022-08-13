@@ -1,10 +1,14 @@
+import 'package:bgm/api/providers/daily_data_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'api/providers/auth.provider.dart';
 import 'utils/routes.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await DailyDataProvider.initialize();
   runApp(const MyApp());
 }
 
@@ -19,6 +23,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) {
           return AuthProvider();
         }),
+        ChangeNotifierProvider(create: (context) { 
+          return DailyDataProvider();
+        }),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -31,7 +38,7 @@ class MyApp extends StatelessWidget {
               TargetPlatform.android: ZoomPageTransitionsBuilder()
             })),
         routes: routes,
-        initialRoute: "/splash_screen",
+        initialRoute: "/login",
       ),
     );
   }

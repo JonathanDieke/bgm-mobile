@@ -54,7 +54,12 @@ dev_dependencies:
   shared_preferences: ^2.0.15
   flutter_svg: ^1.1.1+1
   http: ^0.13.4
+  number_inc_dec: ^0.8.0
+  select_form_field: ^2.2.0
+  just_the_tooltip: ^0.0.12 
+  auto_validate: ^1.0.3
   # smart_select: ^4.3.2
+  # local_auth: ^2.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
