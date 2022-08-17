@@ -1,5 +1,6 @@
 import 'package:bgm/api/providers/daily_data_provider.dart';
 import 'package:bgm/api/providers/meal_provider.dart';
+import 'package:bgm/api/providers/sleep_provider..dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ Future<void> main() async {
   
   await DailyDataProvider.initialize();
   await MealProvider.initialize();
+  await SleepProvider.initialize();
   runApp(const MyApp());
 }
 
@@ -30,6 +32,9 @@ class MyApp extends StatelessWidget {
         }),
         ChangeNotifierProvider(create: (context) { 
           return MealProvider();
+        }),
+        ChangeNotifierProvider(create: (context) { 
+          return SleepProvider();
         }),
       ],
       child: MaterialApp(

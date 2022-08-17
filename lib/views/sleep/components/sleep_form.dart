@@ -14,7 +14,7 @@ class SleepForm extends StatefulWidget {
 }
 
 class _SleepFormState extends State<SleepForm> {
-  int sleepStart = 0, sleepEnd = 0, glycemiaBefore = 0, glycemiaAfter = 0;
+  int startHour = 0, endHour = 0, glycemiaBefore = 0, glycemiaAfter = 0;
   bool isLoading = false;
 
   List<DropdownMenuItem<int>> get sleepHourItems {
@@ -80,7 +80,7 @@ class _SleepFormState extends State<SleepForm> {
                 ),
                 onChanged: (int? newValue) {
                   setState(() {
-                    sleepStart = newValue ?? 0;
+                    startHour = newValue ?? 0;
                   });
                 },
               ),
@@ -102,7 +102,7 @@ class _SleepFormState extends State<SleepForm> {
                 ),
                 onChanged: (int? newValue) {
                   setState(() {
-                    sleepEnd = newValue ?? 0;
+                    endHour = newValue ?? 0;
                   });
                 },
               ),
@@ -215,8 +215,8 @@ class _SleepFormState extends State<SleepForm> {
         Provider.of<SleepProvider>(context, listen: false);
 
     sleepProvider.saveSleep({
-      "start": sleepStart,
-      "end": sleepEnd,
+      "start_hour": startHour,
+      "end_hour": endHour,
       "glycemia_before": glycemiaBefore,
       "glycemia_after": glycemiaAfter
     }).then((Map<String, dynamic> data) {
@@ -242,6 +242,8 @@ class _SleepFormState extends State<SleepForm> {
       setState(() {
         isLoading = false;
       });
+
+      print("Erreuuuur :=> " + error.toString());
 
       showSnackbar(context,
           "Quelque chose s'est mal passé : veuilez réessayer ! \nSi le problème persiste, contactez le service support",

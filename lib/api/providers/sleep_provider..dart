@@ -12,6 +12,10 @@ import '../../utils/constants.dart';
 class SleepProvider extends ChangeNotifier {
   static late SharedPreferences prefs;
 
+  static Future<SharedPreferences> initialize() async {
+    return prefs = await SharedPreferences.getInstance();
+  }
+
   Future<Map<String, dynamic>> saveSleep(Map<String, dynamic> data) async {
     Uri uri = Uri.parse(Constants.createSleepURL);
     var userToken = prefs.getString("userToken");
