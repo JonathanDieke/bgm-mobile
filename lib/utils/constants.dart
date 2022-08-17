@@ -13,10 +13,13 @@ class Constants {
   static const user = "$baseURL/api/user";
 
   //Daily Data
-  static const addDailyData = "$baseURL/api/daily-data";
+  static const createDailyData = "$baseURL/api/daily-data";
 
   //Meal
-  static const addMealURL = "$baseURL/api/meal/";
+  static const createMealURL = "$baseURL/api/meal/";
+
+  //Sleep
+  static const createSleepURL = "$baseURL/api/sleep/";
 
   // static const ALERTE_URL = "$BASE_URL/controles/liste";
   // static const RAPPORT_URL = "$BASE_URL/nmpf/stats";

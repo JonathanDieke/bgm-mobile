@@ -23,7 +23,7 @@ class DailyData {
     final String currentDate = DateTime.now().toString().split(" ")[0];
     final bool isForcurrentDay =
         createdAt != "" && createdAt.split('T')[0] == currentDate;
-    print("isForcurrent day method de classe : $isForcurrentDay");
+    // print("isForcurrent day method de classe : $isForcurrentDay");
     return isForcurrentDay;
   }
 

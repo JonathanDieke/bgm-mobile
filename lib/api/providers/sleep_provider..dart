@@ -1,24 +1,19 @@
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../utils/constants.dart';
-import '../models/meal.dart';
-import '../models/user.dart';
+import 'package:http/http.dart' as http;
 
-class MealProvider extends ChangeNotifier {
-  Meal meal = Meal();
+import '../../utils/constants.dart';
+ 
+
+class SleepProvider extends ChangeNotifier {
   static late SharedPreferences prefs;
 
-  static Future<SharedPreferences> initialize() async {
-    return prefs = await SharedPreferences.getInstance();
-  }
-
-  Future<Map<String, dynamic>> saveMeal(Map<String, dynamic> data) async {
-    Uri uri = Uri.parse(Constants.createMealURL);
+  Future<Map<String, dynamic>> saveSleep(Map<String, dynamic> data) async {
+    Uri uri = Uri.parse(Constants.createSleepURL);
     var userToken = prefs.getString("userToken");
     data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
 

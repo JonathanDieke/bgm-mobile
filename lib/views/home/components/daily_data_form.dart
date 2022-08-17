@@ -27,11 +27,13 @@ class _DailyDataFormState extends State<DailyDataForm> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    // print(DateTime.now().toString().split(" ")[0] != null);
+    // Provider.of<DailyDataProvider>(context, listen: true).getDailyData();
+
+    // print('reloading dail data FORM');
+    // print('daily data form notifié');
 
     return Consumer<DailyDataProvider>(
       builder: (context, dailyDataProvider, child) {
-        print('daily data form notifié');
         dailyDataProvider.getDailyData().then((value) {
           // print("getDailyData :=> ${dailyDataProvider.toString()}");
           hyperglycemieController.text =
@@ -176,9 +178,10 @@ class _DailyDataFormState extends State<DailyDataForm> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          dailyDataProvider.clearSP();
+                          // dailyDataProvider.clearDailyDataCache();
+                          dailyDataProvider.clearDailyDataCache();
                         },
-                        child: Text("clear SP"),
+                        child: const Text("clear SP"),
                       ),
                       //bouton de soumission
                       Container(
@@ -258,8 +261,6 @@ class _DailyDataFormState extends State<DailyDataForm> {
   }
 
   void savingDailyData() {
-    // print('daily saving..');
-    // print('daily saving.. ${hyperglycemieController.text}');
     setState(() {
       isLoading = true;
     });

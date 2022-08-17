@@ -1,22 +1,19 @@
-import 'package:bgm/views/meal/components/meal_form.dart';
-import 'package:bgm/views/meal/components/meal_card.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bgm/views/sleep/components/sleep_form.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../utils/logo.dart';
 
-class MealView extends StatefulWidget {
-  const MealView({Key? key}) : super(key: key);
+class SleepView extends StatefulWidget {
+  const SleepView({Key? key}) : super(key: key);
 
   @override
-  State<MealView> createState() => _MealViewState();
+  State<SleepView> createState() => _SleepViewState();
 }
 
-class _MealViewState extends State<MealView> {
+class _SleepViewState extends State<SleepView> {
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size; 
+    Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
       body: SafeArea(
@@ -52,27 +49,9 @@ class _MealViewState extends State<MealView> {
                   ),
                 ),
               ),
-              //Cards contenant les différents repas checked when done
-              const MealCard(
-                  "Petit déjeuner (entre 7h et 9h)", FontAwesomeIcons.check),
-              const MealCard(
-                  "Déjeuner (entre 12h et 13h)", FontAwesomeIcons.check),
-              const MealCard(
-                  "Diner (entre 18h et 20h)", FontAwesomeIcons.check),
-              //Divider
-              Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 40,
-                  horizontal: screenSize.width * .08,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey.shade300,
-                    style: BorderStyle.solid,
-                  ),
-                ),
-              ),
-              const MealForm(),
+
+              //Form
+              SleepForm(),
             ],
           ),
         ),

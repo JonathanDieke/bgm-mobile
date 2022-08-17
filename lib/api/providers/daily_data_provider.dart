@@ -20,8 +20,8 @@ class DailyDataProvider with ChangeNotifier {
       int nbHyperglycemia, int nbHypoglycemia, int isSick) async {
     // prefs = await SharedPreferences.getInstance();
     var token = "Bearer ${prefs.getString('userToken')}";
-    final String? dailyDataId = prefs.getString("dailyDataId");
-    Uri uri = Uri.parse(Constants.addDailyData);
+    final String? dailyDataId = isForCurrentDay() ? prefs.getString("dailyDataId") : "";
+    Uri uri = Uri.parse(Constants.createDailyData);
 
     Map<String, dynamic> data = {
       'nb_hyperglycemia': nbHyperglycemia,
@@ -41,7 +41,7 @@ class DailyDataProvider with ChangeNotifier {
 
     Map<String, dynamic> result = processSwitchResponse(responseAPI);
 
-    ChangeNotifier();
+    notifyListeners();
 
     return result;
   }
@@ -53,9 +53,7 @@ class DailyDataProvider with ChangeNotifier {
     if (responseAPI.statusCode == 201 || responseAPI.statusCode == 200) {
       var data = json.decode(responseAPI.body);
 
-      dailyData = DailyData.fromJson(data['data']);
-
-      print("dailyData before setting : $dailyData");
+      dailyData = DailyData.fromJson(data['data']); 
 
       setDailyData(dailyData);
 
@@ -75,9 +73,6 @@ class DailyDataProvider with ChangeNotifier {
   }
 
   Future<void> setDailyData(DailyData dailyData) async {
-    // prefs = await SharedPreferences.getInstance();
-    print("set faily method ");
-
     /** 
      * Verifier si les data sont les premiers de la journées : 
      * autrement dit verifier s'il s'agit d'un "create" ou un "update"
@@ -85,8 +80,7 @@ class DailyDataProvider with ChangeNotifier {
      * 
      * On enregistre donc le nouvelle Id généré par le backend et l'attribut createdAt
     */
-    if (!isForCurrentDay()) {
-      print("nouvelle daily data !");
+    if (!isForCurrentDay()) { 
       prefs.setString('dailyDataId', dailyData.id);
       prefs.setString("dailyDataCreatedAt", dailyData.createdAt.toString());
     }
@@ -110,12 +104,9 @@ class DailyDataProvider with ChangeNotifier {
 
     if (!dailyData.isForCurrentDay()) {
       dailyData = DailyData();
-      clearDailyDataCache();
     }
-
-    print("get daily data method:  $dailyData");
-
-    ChangeNotifier();
+    
+    notifyListeners();
   }
 
   bool isForCurrentDay() {
@@ -123,8 +114,14 @@ class DailyDataProvider with ChangeNotifier {
         prefs.getString("dailyDataCreatedAt")?.split('T')[0];
     final String currentDate = DateTime.now().toString().split(" ")[0];
 
-    return previousDailyDataDate is String &&
-        previousDailyDataDate == currentDate;
+    bool isForCurrentDay =
+        previousDailyDataDate is String && previousDailyDataDate == currentDate;
+
+    if (!isForCurrentDay) {
+      clearDailyDataCache();
+    }
+     
+    return isForCurrentDay;
   }
 
   void clearDailyDataCache() {
@@ -133,7 +130,9 @@ class DailyDataProvider with ChangeNotifier {
     prefs.remove("dailyDataNbHypoglycemia");
     prefs.remove("dailyDataIsSick");
     prefs.remove("dailyDataCreatedAt");
-    prefs.remove("dailyDataUpdatedAt"); 
+    prefs.remove("dailyDataUpdatedAt");
+
+    notifyListeners();
   }
 
   void clearSP() async {

@@ -4,6 +4,8 @@ import 'package:bgm/components/my_footer_component.dart';
 import 'package:bgm/utils/logo.dart';
 import 'package:flutter/material.dart';
 
+import '../../api/providers/daily_data_provider.dart';
+
 class MySplashScreen extends StatefulWidget {
   const MySplashScreen({Key? key}) : super(key: key);
 

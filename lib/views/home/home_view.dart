@@ -93,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
                             homeCard("Ajouter un repas",
                                 FontAwesomeIcons.bowlFood, "/meal"),
                             homeCard("Ajouter un temps de sommeil",
-                                FontAwesomeIcons.bed, "/meal"),
+                                FontAwesomeIcons.bed, "/sleep"),
                             homeCard("Ajouter une activité physique",
                                 FontAwesomeIcons.personRunning, "/meal"),
                             homeCard("Ajouter une prise d'insuline",
@@ -115,7 +115,7 @@ class _HomeViewState extends State<HomeView> {
   homeCard(String title, IconData icon, String attachedView) {
     return Consumer<DailyDataProvider>(
       builder: (context, dailyDataProvider, child) {
-        print('home notifié');
+        // print('home notifié');
         return dailyDataProvider.isForCurrentDay()
             ? Card(
                 elevation: 2,

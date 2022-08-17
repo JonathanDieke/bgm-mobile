@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../api/providers/meal_provider.dart';
+import '../../../components/my_dialog_box.dart';
+import '../../../utils/helpers.dart';
 
-class AddMealForm extends StatefulWidget {
-  const AddMealForm({Key? key}) : super(key: key);
+class MealForm extends StatefulWidget {
+  const MealForm({Key? key}) : super(key: key);
 
   @override
-  State<AddMealForm> createState() => _AddMealFormState();
+  State<MealForm> createState() => _MealFormState();
 }
 
-class _AddMealFormState extends State<AddMealForm> {
-  final mealContent = TextEditingController();
-  // String mealType = DateTime.now().hour < 12
-  //     ? "first_breakfast"
-  //     : (DateTime.now().hour > 17 ? "dinner" : "breakfast");
-  String mealType = "";
-  int mealHour = 0;
-  bool isSaving = false;
+class _MealFormState extends State<MealForm> {
+  String mealType = "", mealContent = "";
+  int mealHour = 0, glycemiaBefore = 0, glycemiaAfter = 0;
+  bool isLoading = false;
 
   List<DropdownMenuItem<String>> get mealTypeItems {
     List<DropdownMenuItem<String>> menuItems = const [
@@ -39,7 +39,6 @@ class _AddMealFormState extends State<AddMealForm> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    print(screenSize.width);
 
     return Container(
       // margin: const EdgeInsets.symmetric(vertical: 20),
@@ -112,7 +111,7 @@ class _AddMealFormState extends State<AddMealForm> {
                 ),
                 onChanged: (int? newValue) {
                   setState(() {
-                    mealHour = newValue!;
+                    mealHour = newValue ?? 0;
                   });
                 },
               ),
@@ -122,15 +121,20 @@ class _AddMealFormState extends State<AddMealForm> {
                 children: [
                   Expanded(
                     flex: 1,
-                    child: TextField(
-                      controller: mealContent,
+                    child: TextFormField(
+                      keyboardType:
+                          const TextInputType.numberWithOptions(signed: false),
                       decoration: const InputDecoration(
                         alignLabelWithHint: true,
                         labelText: 'Glycémie avant le repas (en mg/dL) ',
                         hintText: 'Example : 100',
                         border: OutlineInputBorder(),
                       ),
-                      onSubmitted: (text) {},
+                      onChanged: (String value) {
+                        setState(() {
+                          glycemiaBefore = int.parse(value);
+                        });
+                      },
                     ),
                   ),
                   const SizedBox(
@@ -138,31 +142,39 @@ class _AddMealFormState extends State<AddMealForm> {
                   ),
                   Expanded(
                     flex: 1,
-                    child: TextField(
-                      controller: mealContent,
+                    child: TextFormField(
+                      keyboardType:
+                          const TextInputType.numberWithOptions(signed: false),
                       decoration: const InputDecoration(
                         alignLabelWithHint: true,
                         labelText: 'Glycémie après le repas (en mg/dL) ',
                         hintText: 'Example : 100',
                         border: OutlineInputBorder(),
                       ),
-                      onSubmitted: (text) {},
+                      onChanged: (String value) {
+                        setState(() {
+                          glycemiaAfter = int.parse(value);
+                        });
+                      },
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 20),
               //Contenu du repas
-              TextField(
+              TextFormField(
                 maxLines: screenSize.width > 450 ? 4 : 6,
-                controller: mealContent,
                 decoration: const InputDecoration(
                   alignLabelWithHint: true,
                   labelText: 'Contenu du repas',
                   hintText: 'Example : Haricot vert, poulet',
                   border: OutlineInputBorder(),
                 ),
-                onSubmitted: (text) {},
+                onChanged: (String value) {
+                  setState(() {
+                    mealContent = value;
+                  });
+                },
               ),
               const SizedBox(height: 25),
               //Bouton de soumission
@@ -177,7 +189,7 @@ class _AddMealFormState extends State<AddMealForm> {
                     Radius.elliptical(10, 10),
                   ),
                 ),
-                child: !isSaving
+                child: !isLoading
                     // ignore: deprecated_member_use
                     ? RaisedButton(
                         onPressed: () {
@@ -232,8 +244,48 @@ class _AddMealFormState extends State<AddMealForm> {
     );
   }
 
-  void savingMeal(){
+  void savingMeal() {
+    setState(() {
+      isLoading = true;
+    });
 
+    MealProvider mealProvider =
+        Provider.of<MealProvider>(context, listen: false);
+
+    mealProvider.saveMeal({
+      "type": mealType,
+      "hour": mealHour,
+      "content": mealContent,
+      "glycemia_before": glycemiaBefore,
+      "glycemia_after": glycemiaAfter
+    }).then((Map<String, dynamic> data) {
+      setState(() {
+        isLoading = false;
+      });
+      //if bad token, redirect automatically on login view without come back possibility
+      if (data['unauthorized']) {
+        Navigator.pushReplacementNamed(context, "/login");
+      }
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialogBox(
+            title:
+                data['result'] ? "Succès".toUpperCase() : "Echec".toUpperCase(),
+            description: data['message'],
+          );
+        },
+      );
+    }).onError((error, stackTrace) {
+      setState(() {
+        isLoading = false;
+      });
+
+      showSnackbar(context,
+          "Quelque chose s'est mal passé : veuilez réessayer ! \nSi le problème persiste, contactez le service support",
+          duration: 5000);
+    });
   }
 
 //
