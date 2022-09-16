@@ -326,7 +326,7 @@ class _FormComponentState extends State<FormComponent> {
           showSnackbar(context, data['message'], removePwd: false);
         }
       }).onError((error, stackTrace) {
-        // print("---- ERROR --- : " + error.toString());
+        print("---- ERROR --- : " + error.toString());
         setState(() {
           isAttemptLogin = false;
         });

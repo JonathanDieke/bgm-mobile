@@ -1,1 +1,9 @@
 - mettre les boutons de soumission dans un seul composant
+- mettre des valeurs par défaut pour les valeurs de  glycémie avant et après
+- enregistrer les repas/sports habituels pour une autocomplétion des champs
+- lier le patient à un médécin de sorte à permettre 
+
+- conseiller le patient dans la consmmation et les exercices physiqeus (car sont les facteurs les plus importants)3= 
+
+- sur le long terme, développer un système d'aide à la décision précis pour aider les médécins/patients 
+    dans le suivi en temps réel de la glycémie (via platform web )

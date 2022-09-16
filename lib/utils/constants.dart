@@ -6,7 +6,7 @@ class Constants {
     "withCredentials": "true",
   };
   //Constantes here
-  static const baseURL = "http://192.168.1.143:8000";
+  static const baseURL = "http://192.168.1.3:8000"; //192.168.1.41
 
   static const csrfCookie = "$baseURL/sanctum/csrf-cookie";
   static const logInURL = "$baseURL/api/login";
@@ -21,9 +21,11 @@ class Constants {
   //Sleep
   static const createSleepURL = "$baseURL/api/sleep/";
 
-  // static const ALERTE_URL = "$BASE_URL/controles/liste";
-  // static const RAPPORT_URL = "$BASE_URL/nmpf/stats";
-  // static const LOG_OUT_URL = "$BASE_URL/mon_espace/deconnexion";
+  //Sport
+  static const createSportURL = "$baseURL/api/sport/";
+
+  //Insulin
+  static const createInsulinURL = "$baseURL/api/insulin/"; 
 
   // static const double MY_DIALOG_BOX_PADDING = 5;
   // static const double  MY_DIALOG_BOX_AVATAR_RADIUS = 45;

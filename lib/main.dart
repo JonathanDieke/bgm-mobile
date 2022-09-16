@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'api/providers/auth.provider.dart';
+import 'api/providers/insulin_provider.dart';
+import 'api/providers/sport_provider.dart';
 import 'utils/routes.dart';
 
 Future<void> main() async {
@@ -13,6 +15,8 @@ Future<void> main() async {
   await DailyDataProvider.initialize();
   await MealProvider.initialize();
   await SleepProvider.initialize();
+  await SportProvider.initialize();
+  await InsulinProvider.initialize();
   runApp(const MyApp());
 }
 
@@ -36,6 +40,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) { 
           return SleepProvider();
         }),
+        ChangeNotifierProvider(create: (context) { 
+          return SportProvider();
+        }),
+        ChangeNotifierProvider(create: (context) { 
+          return InsulinProvider();
+        }),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -48,7 +58,7 @@ class MyApp extends StatelessWidget {
               TargetPlatform.android: ZoomPageTransitionsBuilder()
             })),
         routes: routes,
-        initialRoute: "/login",
+        initialRoute: "/splash_screen",
       ),
     );
   }

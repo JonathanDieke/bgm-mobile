@@ -95,9 +95,9 @@ class _HomeViewState extends State<HomeView> {
                             homeCard("Ajouter un temps de sommeil",
                                 FontAwesomeIcons.bed, "/sleep"),
                             homeCard("Ajouter une activité physique",
-                                FontAwesomeIcons.personRunning, "/meal"),
+                                FontAwesomeIcons.personRunning, "/sport"),
                             homeCard("Ajouter une prise d'insuline",
-                                FontAwesomeIcons.syringe, "/meal"),
+                                FontAwesomeIcons.syringe, "/insulin"),
                           ],
                         ),
                       ],
@@ -114,8 +114,7 @@ class _HomeViewState extends State<HomeView> {
 
   homeCard(String title, IconData icon, String attachedView) {
     return Consumer<DailyDataProvider>(
-      builder: (context, dailyDataProvider, child) {
-        // print('home notifié');
+      builder: (context, dailyDataProvider, child) { 
         return dailyDataProvider.isForCurrentDay()
             ? Card(
                 elevation: 2,
@@ -131,14 +130,7 @@ class _HomeViewState extends State<HomeView> {
                         Color.fromARGB(255, 224, 86, 93),
                         Color(0xFFffffff),
                       ],
-                    ),
-                    // boxShadow: const [
-                    //   BoxShadow(
-                    //     color: Colors.white,
-                    //     blurRadius: 3,
-                    //     offset: Offset(2, 2),
-                    //   )
-                    // ],
+                    ), 
                   ),
                   child: InkWell(
                     onTap: () {
@@ -157,8 +149,7 @@ class _HomeViewState extends State<HomeView> {
                               icon,
                               size: 100,
                             ),
-                            onPressed: () {
-                              print("Pressed icon on home view");
+                            onPressed: () { 
                               Navigator.pushNamed(context, attachedView);
                             },
                           ),

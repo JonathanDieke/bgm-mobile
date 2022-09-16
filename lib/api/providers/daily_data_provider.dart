@@ -132,7 +132,7 @@ class DailyDataProvider with ChangeNotifier {
     prefs.remove("dailyDataCreatedAt");
     prefs.remove("dailyDataUpdatedAt");
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void clearSP() async {
