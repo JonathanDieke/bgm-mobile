@@ -111,20 +111,20 @@ class DailyDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // bool isForCurrentDay() {
-  //   final String? previousDailyDataDate =
-  //       prefs.getString("dailyDataCreatedAt")?.split('T')[0];
-  //   final String currentDate = DateTime.now().toString().split(" ")[0];
+  bool isForCurrentDay() {
+    final String? previousDailyDataDate =
+        prefs.getString("dailyDataCreatedAt")?.split('T')[0];
+    final String currentDate = DateTime.now().toString().split(" ")[0];
 
-  //   bool isForCurrentDay =
-  //       previousDailyDataDate is String && previousDailyDataDate == currentDate;
+    bool isForCurrentDay =
+        previousDailyDataDate is String && previousDailyDataDate == currentDate;
 
-  //   if (!isForCurrentDay) {
-  //     clearDailyDataCache();
-  //   }
+    if (!isForCurrentDay) {
+      clearDailyDataCache();
+    }
      
-  //   return isForCurrentDay;
-  // }
+    return isForCurrentDay;
+  }
 
   void clearDailyDataCache() {
     prefs.remove("dailyDataId");

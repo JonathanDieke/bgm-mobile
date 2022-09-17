@@ -34,8 +34,6 @@ class AuthProvider extends ChangeNotifier {
       body: jsonEncode(data),
     );
 
-    print(responseAPI.statusCode);
-    print(responseAPI.body);
     // print(Constants.logInURL);
 
     if (responseAPI.statusCode == 200) {

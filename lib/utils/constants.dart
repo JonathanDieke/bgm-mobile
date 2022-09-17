@@ -17,16 +17,16 @@ class Constants {
   static const createDailyData = "$baseURL/api/daily-data";
 
   //Meal
-  static const createMealURL = "$baseURL/api/meal/";
+  static const createMealURL = "$baseURL/api/meal";
 
   //Sleep
-  static const createSleepURL = "$baseURL/api/sleep/";
+  static const createSleepURL = "$baseURL/api/sleep";
 
   //Sport
-  static const createSportURL = "$baseURL/api/sport/";
+  static const createSportURL = "$baseURL/api/sport";
 
   //Insulin
-  static const createInsulinURL = "$baseURL/api/insulin/"; 
+  static const createInsulinURL = "$baseURL/api/insulin"; 
 
   // static const double MY_DIALOG_BOX_PADDING = 5;
   // static const double  MY_DIALOG_BOX_AVATAR_RADIUS = 45;

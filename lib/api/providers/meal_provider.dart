@@ -32,6 +32,10 @@ class MealProvider extends ChangeNotifier {
       body: jsonEncode(data),
     );
 
+    
+    print(responseAPI.statusCode);
+    print(responseAPI.body);
+
     Map<String, dynamic> result = processSwitchResponse(responseAPI);
 
     notifyListeners();

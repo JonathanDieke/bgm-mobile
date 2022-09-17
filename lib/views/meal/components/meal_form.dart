@@ -278,6 +278,7 @@ class _MealFormState extends State<MealForm> {
         },
       );
     }).onError((error, stackTrace) {
+      print(error.toString());
       setState(() {
         isLoading = false;
       });
