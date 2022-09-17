@@ -6,7 +6,8 @@ class Constants {
     "withCredentials": "true",
   };
   //Constantes here
-  static const baseURL = "http://192.168.1.3:8000"; //192.168.1.41
+  // static const baseURL = "http://192.168.1.3:8000"; //192.168.1.41
+  static const baseURL = "https://bloodglucosemeasure.herokuapp.com"; //192.168.1.41
 
   static const csrfCookie = "$baseURL/sanctum/csrf-cookie";
   static const logInURL = "$baseURL/api/login";

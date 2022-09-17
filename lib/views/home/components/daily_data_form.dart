@@ -51,11 +51,11 @@ class _DailyDataFormState extends State<DailyDataForm> {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 // Titre
                 const Text(
-                  "Données quotidiennes",
+                  "Mon état physique",
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     fontSize: 20,

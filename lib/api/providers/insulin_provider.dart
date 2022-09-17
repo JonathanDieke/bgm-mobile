@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +16,7 @@ class InsulinProvider extends ChangeNotifier{
   Future<Map<String, dynamic>> saveInsulin(Map<String, dynamic> data) async {
     Uri uri = Uri.parse(Constants.createInsulinURL);
     var userToken = prefs.getString("userToken");
-    data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
+    // data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
 
     var responseAPI = await http.post(
       uri,

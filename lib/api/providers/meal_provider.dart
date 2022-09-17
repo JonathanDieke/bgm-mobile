@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/constants.dart';
 import '../models/meal.dart';
-import '../models/user.dart';
 
 class MealProvider extends ChangeNotifier {
   Meal meal = Meal();
@@ -18,9 +17,11 @@ class MealProvider extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> saveMeal(Map<String, dynamic> data) async {
+    // clearMealCache();
+
     Uri uri = Uri.parse(Constants.createMealURL);
     var userToken = prefs.getString("userToken");
-    data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
+    data['id'] = isForCurrentDay(data) ? getIdSwitchMealType(data) : "";
 
     var responseAPI = await http.post(
       uri,
@@ -45,9 +46,9 @@ class MealProvider extends ChangeNotifier {
     if (responseAPI.statusCode == 201 || responseAPI.statusCode == 200) {
       var data = json.decode(responseAPI.body);
 
-      // meal = Meal.fromJson(data['data']);
+      meal = Meal.fromJson(data['data']);
 
-      // setMeal(meal);
+      setMeal(meal);
 
       message = data['message'];
       result = true;
@@ -62,5 +63,62 @@ class MealProvider extends ChangeNotifier {
       "message": message,
       "unauthorized": unauthorized
     };
+  }
+
+  Future<void> setMeal(Meal meal) async {
+    if (meal.type == 'first_breakfast') {
+      prefs.setString('mealIdFirstBreakfast', meal.id);
+      prefs.setString("mealCreatedAtFirstBreakfast", meal.createdAt.toString());
+    } else if (meal.type == 'breakfast') {
+      prefs.setString('mealIdBreakfast', meal.id);
+      prefs.setString("mealCreatedAtBreakfast", meal.createdAt.toString());
+    } else if (meal.type == 'dinner') {
+      prefs.setString('mealIdDinner', meal.id);
+      prefs.setString("mealCreatedAtDinner", meal.createdAt.toString());
+    }
+  }
+
+  bool isForCurrentDay(Map<String, dynamic> data) {
+    String? previousMealDate = "";
+    if (data["type"] == 'first_breakfast') {
+      previousMealDate =
+          prefs.getString("mealCreatedAtFirstBreakfast")?.split('T')[0];
+    } else if (data["type"] == 'breakfast') {
+      previousMealDate =
+          prefs.getString("mealCreatedAtBreakfast")?.split('T')[0];
+    } else if (data["type"] == 'dinner') {
+      previousMealDate = prefs.getString("mealCreatedAtDinner")?.split('T')[0];
+    }
+
+    final String currentDate = DateTime.now().toString().split(" ")[0];
+    bool isForCurrentDay =
+        previousMealDate is String && previousMealDate == currentDate;
+
+    // if (!isForCurrentDay) {
+    //   clearMealCache();
+    // }
+
+    return isForCurrentDay;
+  }
+
+  void clearMealCache() {
+    prefs.remove("mealIdFirstBreakfast");
+    prefs.remove("mealIdBreakfast");
+    prefs.remove("mealIdDinner");
+    prefs.remove("mealCreatedAtFirstBreakfast");
+    prefs.remove("mealCreatedAtBreakfast");
+    prefs.remove("mealCreatedAtDinner");
+
+    // notifyListeners();
+  }
+
+  getIdSwitchMealType(Map<String, dynamic> data) {
+    if (data['type'] == 'first_breakfast') {
+      return prefs.getString('mealIdFirstBreakfast');
+    } else if (data['type'] == 'breakfast') {
+      return prefs.getString('mealIdBreakfast');
+    } else if (data['type'] == 'dinner') {
+      return prefs.getString('mealIdDinner');
+    }
   }
 }

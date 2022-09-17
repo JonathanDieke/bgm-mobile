@@ -1,3 +1,4 @@
+import 'package:bgm/views/home/components/my_drawer_navigation.dart';
 import 'package:bgm/views/insulin/insulin_page.dart';
 import 'package:bgm/views/meal/meal_page.dart';
 import 'package:bgm/views/sleep/components/sleep_form.dart';
@@ -5,6 +6,8 @@ import 'package:bgm/views/sleep/sleep_page.dart';
 import 'package:bgm/views/sport/sport_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'components/daily_data_form.dart';
 
 class HomeView2Animated extends StatefulWidget {
   const HomeView2Animated({Key? key}) : super(key: key);
@@ -14,19 +17,25 @@ class HomeView2Animated extends StatefulWidget {
 }
 
 class _HomeView2AnimatedState extends State<HomeView2Animated> {
+  
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       // Number of pages (or tab views)
-      length: 4,
+      length: 5,
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: MyDrawerNavigation(),
         appBar: AppBar(
           centerTitle: true,
           title: Text("BGM"),
-          //centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.menu),
-            onPressed: () {},
+            onPressed: () {
+              _scaffoldKey.currentState?.openDrawer();
+            },
           ),
           // actions: [
           //   IconButton(
@@ -53,6 +62,7 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
             indicatorColor: Colors.white,
             indicatorWeight: 5,
             tabs: [
+              Tab(icon: Icon(FontAwesomeIcons.person), text: 'Etat physique'),
               Tab(icon: Icon(FontAwesomeIcons.bowlFood), text: 'Repas'),
               Tab(icon: Icon(FontAwesomeIcons.bed), text: 'Repos'),
               Tab(
@@ -71,6 +81,7 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
           ),
           child: TabBarView(
             children: [
+              DailyDataForm(),
               MealPage(),
               SleepPage(),
               SportPage(),

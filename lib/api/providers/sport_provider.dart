@@ -17,7 +17,7 @@ class SportProvider extends ChangeNotifier{
   Future<Map<String, dynamic>> saveSport(Map<String, dynamic> data) async {
     Uri uri = Uri.parse(Constants.createSportURL);
     var userToken = prefs.getString("userToken");
-    data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
+    // data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
 
     var responseAPI = await http.post(
       uri,

@@ -19,7 +19,7 @@ class SleepProvider extends ChangeNotifier {
   Future<Map<String, dynamic>> saveSleep(Map<String, dynamic> data) async {
     Uri uri = Uri.parse(Constants.createSleepURL);
     var userToken = prefs.getString("userToken");
-    data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
+    // data['daily_data_id'] = prefs.getString("dailyDataId") ?? "";
 
     var responseAPI = await http.post(
       uri,

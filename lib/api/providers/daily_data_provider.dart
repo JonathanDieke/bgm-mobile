@@ -20,14 +20,14 @@ class DailyDataProvider with ChangeNotifier {
       int nbHyperglycemia, int nbHypoglycemia, int isSick) async {
     // prefs = await SharedPreferences.getInstance();
     var token = "Bearer ${prefs.getString('userToken')}";
-    final String? dailyDataId = isForCurrentDay() ? prefs.getString("dailyDataId") : "";
+    // final String? dailyDataId = isForCurrentDay() ? prefs.getString("dailyDataId") : "";
     Uri uri = Uri.parse(Constants.createDailyData);
 
     Map<String, dynamic> data = {
       'nb_hyperglycemia': nbHyperglycemia,
       'nb_hypoglycemia': nbHypoglycemia,
       "is_sick": isSick,
-      "id": dailyDataId,
+      // "id": dailyDataId,
     };
 
     var responseAPI = await http.post(
@@ -80,10 +80,12 @@ class DailyDataProvider with ChangeNotifier {
      * 
      * On enregistre donc le nouvelle Id généré par le backend et l'attribut createdAt
     */
-    if (!isForCurrentDay()) { 
-      prefs.setString('dailyDataId', dailyData.id);
-      prefs.setString("dailyDataCreatedAt", dailyData.createdAt.toString());
-    }
+    // if (!isForCurrentDay()) { 
+    //   prefs.setString('dailyDataId', dailyData.id);
+    //   prefs.setString("dailyDataCreatedAt", dailyData.createdAt.toString());
+    // }
+    prefs.setString('dailyDataId', dailyData.id);
+    prefs.setString("dailyDataCreatedAt", dailyData.createdAt.toString());
 
     prefs.setInt('dailyDataNbHyperglycemia', dailyData.nbHyperglycemia);
     prefs.setInt('dailyDataNbHypoglycemia', dailyData.nbHypoglycemia);
@@ -109,20 +111,20 @@ class DailyDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isForCurrentDay() {
-    final String? previousDailyDataDate =
-        prefs.getString("dailyDataCreatedAt")?.split('T')[0];
-    final String currentDate = DateTime.now().toString().split(" ")[0];
+  // bool isForCurrentDay() {
+  //   final String? previousDailyDataDate =
+  //       prefs.getString("dailyDataCreatedAt")?.split('T')[0];
+  //   final String currentDate = DateTime.now().toString().split(" ")[0];
 
-    bool isForCurrentDay =
-        previousDailyDataDate is String && previousDailyDataDate == currentDate;
+  //   bool isForCurrentDay =
+  //       previousDailyDataDate is String && previousDailyDataDate == currentDate;
 
-    if (!isForCurrentDay) {
-      clearDailyDataCache();
-    }
+  //   if (!isForCurrentDay) {
+  //     clearDailyDataCache();
+  //   }
      
-    return isForCurrentDay;
-  }
+  //   return isForCurrentDay;
+  // }
 
   void clearDailyDataCache() {
     prefs.remove("dailyDataId");
@@ -132,7 +134,7 @@ class DailyDataProvider with ChangeNotifier {
     prefs.remove("dailyDataCreatedAt");
     prefs.remove("dailyDataUpdatedAt");
 
-    // notifyListeners();
+    notifyListeners();
   }
 
   void clearSP() async {
