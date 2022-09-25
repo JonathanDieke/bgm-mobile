@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../../api/providers/auth.provider.dart';
+import '../../../api/providers/user_provider.dart';
 import '../../../utils/helpers.dart';
 
 class FormComponent extends StatefulWidget {
@@ -308,8 +308,8 @@ class _FormComponentState extends State<FormComponent> {
         isAttemptLogin = true;
       });
 
-      AuthProvider authProvider =
-          Provider.of<AuthProvider>(context, listen: false);
+      UserProvider authProvider =
+          Provider.of<UserProvider>(context, listen: false);
 
       authProvider
           .authenticate(loginTextController.text, pwdTextController.text)

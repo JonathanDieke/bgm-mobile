@@ -4,7 +4,7 @@ import 'package:bgm/api/providers/sleep_provider..dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'api/providers/auth.provider.dart';
+import 'api/providers/user_provider.dart';
 import 'api/providers/insulin_provider.dart';
 import 'api/providers/sport_provider.dart';
 import 'utils/routes.dart';
@@ -12,6 +12,7 @@ import 'utils/routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  await UserProvider.initialize();
   await DailyDataProvider.initialize();
   await MealProvider.initialize();
   await SleepProvider.initialize();
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) {
-          return AuthProvider();
+          return UserProvider();
         }),
         ChangeNotifierProvider(create: (context) { 
           return DailyDataProvider();

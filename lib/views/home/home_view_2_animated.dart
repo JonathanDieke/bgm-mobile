@@ -17,11 +17,12 @@ class HomeView2Animated extends StatefulWidget {
 }
 
 class _HomeView2AnimatedState extends State<HomeView2Animated> {
-  
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    print(MediaQuery.of(context).size.width);
     return DefaultTabController(
       // Number of pages (or tab views)
       length: 5,
@@ -57,11 +58,11 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
               ),
             ),
           ),
-          bottom: const TabBar(
-            // isScrollable: true,
+          bottom: TabBar(
+            isScrollable: screenSize.width > 460 ? true : false,
             indicatorColor: Colors.white,
             indicatorWeight: 5,
-            tabs: [
+            tabs: const [
               Tab(icon: Icon(FontAwesomeIcons.person), text: 'Etat physique'),
               Tab(icon: Icon(FontAwesomeIcons.bowlFood), text: 'Repas'),
               Tab(icon: Icon(FontAwesomeIcons.bed), text: 'Repos'),

@@ -165,13 +165,7 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
         ));
         break;
       case 1:
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Container(
-              child: Text('page 2'),
-            ),
-          ),
-        );
+        Navigator.pushNamed(context, "/profile");
         break;
     }
   }

@@ -5,6 +5,7 @@ import 'package:bgm/views/insulin/insulin_view.dart';
 import 'package:bgm/views/intro/intro_screen.dart';
 import 'package:bgm/views/meal/meal_view.dart';
 import 'package:bgm/views/sleep/sleep_view.dart';
+import 'package:bgm/views/profile/profile_view.dart';
 import 'package:bgm/views/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,4 +21,5 @@ final routes = {
   '/sleep': (BuildContext context) => const SleepView(),  
   '/sport': (BuildContext context) => const SportView(),  
   '/insulin': (BuildContext context) => const InsulinView(),  
+  '/profile': (BuildContext context) => ProfileView(),  
 };
