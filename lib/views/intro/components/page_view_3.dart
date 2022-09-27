@@ -16,11 +16,11 @@ class PageView3 extends StatelessWidget {
           margin: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          child: Image.asset("assets/images/slider.png"),
+          child: SvgPicture.asset("assets/svg/science.svg"),
         ),
         Container(
           child: const Text(
-            'Merci de partager avec le monde de la science vos données !',
+            'Merci de partager vos données avec le monde de la science !',
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
             style: TextStyle(

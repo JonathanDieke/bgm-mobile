@@ -1,4 +1,7 @@
 class Constants {
+
+  static const durationShowSnackbar  = 5000; 
+
   static const baseHeaders = {
     "Content-Type": "application/json",
     "Accept": "application/json",
@@ -6,8 +9,8 @@ class Constants {
     "withCredentials": "true",
   };
   //Constantes here
-  static const baseURL = "http://192.168.4.183:8000"; //192.168.1.41
-  // static const baseURL = "https://bloodglucosemeasure.herokuapp.com"; //192.168.1.41
+  // static const baseURL = "http://192.168.4.183:8000"; //192.168.1.41
+  static const baseURL = "https://bloodglucosemeasure.herokuapp.com"; //192.168.1.41
 
   static const csrfCookie = "$baseURL/sanctum/csrf-cookie";
   static const logInURL = "$baseURL/api/login";

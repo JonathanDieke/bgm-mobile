@@ -1,3 +1,4 @@
+import 'package:bgm/components/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../api/providers/insulin_provider.dart';
@@ -12,9 +13,12 @@ class InsulinFormComponent extends StatefulWidget {
 }
 
 class _InsulinFormComponentState extends State<InsulinFormComponent> {
-  int hour = 0, glycemia = 0;
+  int? hour, glycemia;
   bool isLoading = false;
-  String typeInsulin = "", mark = "";
+  String? typeInsulin, mark;
+
+  TextEditingController markController = TextEditingController();
+  TextEditingController glycemiaController = TextEditingController();
 
   List<DropdownMenuItem<int>> get insulinHourItems {
     return [for (var i = 0; i < 24; i++) i]
@@ -41,6 +45,13 @@ class _InsulinFormComponentState extends State<InsulinFormComponent> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    markController.dispose();
+    glycemiaController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Container(
@@ -56,168 +67,128 @@ class _InsulinFormComponentState extends State<InsulinFormComponent> {
           // vertical: 8.0,
           horizontal: 15,
         ),
-        child: Form(
-          child: Column(
-            children: [
-              //Titre du formulaire
-              Container(
-                alignment: Alignment.center,
-                // margin: const EdgeInsets.only(top: 10),
-                child: Text(
-                  'Ajouter une prise d\'insuline'.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Montserrat",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              //Type d'inuline
-              DropdownButtonFormField(
-                hint: const Text('Type d\'insuline'),
-                isExpanded: true,
-                elevation: 5,
-                items: insulinTypeItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    typeInsulin = newValue ?? "";
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Marque
-              TextFormField(
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Marque de l\'insuline',
-                  // hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    mark = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Heure de prise
-              DropdownButtonFormField(
-                hint: const Text('Heure de prise'),
-                isExpanded: true,
-                elevation: 5,
-                // value: sleepEnd,
-                items: insulinHourItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    hour = newValue ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Glycémie
-              TextFormField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: false),
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Glycémie (en mg/dL) ',
-                  hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    glycemia = int.parse(value);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Bouton de soumission
-              Container(
-                constraints: BoxConstraints(
-                  minWidth: screenSize.width,
-                  minHeight: 50.0,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.deepOrange,
-                  borderRadius: BorderRadius.all(
-                    Radius.elliptical(10, 10),
-                  ),
-                ),
-                child: !isLoading
-                    // ignore: deprecated_member_use
-                    ? RaisedButton(
-                        onPressed: () {
-                          savingInsulin();
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.elliptical(10, 10),
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(0.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.deepOrange,
-                            borderRadius: BorderRadius.all(
-                              Radius.elliptical(10, 10),
-                            ),
-                          ),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              minWidth: screenSize.width,
-                              minHeight: 50.0,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "Enregistrer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.deepOrange,
-                          strokeWidth: 5,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
+        child: ListView(
+          children: [
+            Form(
+              child: Column(
+                children: [
+                  //Titre du formulaire
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      'Ajouter une prise d\'insuline'.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.7),
+                        fontSize: screenSize.width < 460 ? 20 : 30,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Montserrat",
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  //Type d'inuline
+                  DropdownButtonFormField(
+                    hint: const Text('Type d\'insuline'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: typeInsulin,
+                    items: insulinTypeItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading
+                        ? (String? newValue) {
+                            setState(() {
+                              typeInsulin = newValue ?? "";
+                            });
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+                  //Marque
+                  TextFormField(
+                    controller: markController,
+                    enabled: !isLoading,
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Marque de l\'insuline',
+                      // hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        mark = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  //Heure de prise
+                  DropdownButtonFormField(
+                    hint: const Text('Heure de prise'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: hour,
+                    items: insulinHourItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading
+                        ? (int? newValue) {
+                            setState(() {
+                              hour = newValue ?? 0;
+                            });
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+                  //Glycémie
+                  TextFormField(
+                    enabled: !isLoading,
+                    controller: glycemiaController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: false),
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Glycémie (en mg/dL) ',
+                      hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        glycemia = int.parse(value);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  //Bouton de soumission
+                  ButtonWidget(
+                      isLoading: isLoading,
+                      onPressed: () {
+                        savingInsulin();
+                      })
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void savingInsulin() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       isLoading = true;
     });
@@ -231,6 +202,7 @@ class _InsulinFormComponentState extends State<InsulinFormComponent> {
       "hour": hour,
       "glycemia": glycemia,
     }).then((Map<String, dynamic> data) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -246,10 +218,28 @@ class _InsulinFormComponentState extends State<InsulinFormComponent> {
             title:
                 data['result'] ? "Succès".toUpperCase() : "Echec".toUpperCase(),
             description: data['message'],
+            footer: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
           );
         },
       );
     }).onError((error, stackTrace) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -259,6 +249,17 @@ class _InsulinFormComponentState extends State<InsulinFormComponent> {
       showSnackbar(context,
           "Quelque chose s'est mal passé : veuilez réessayer ! \nSi le problème persiste, contactez le service support",
           duration: 5000);
+    });
+  }
+
+  reinitializeForm() {
+    setState(() {
+      typeInsulin = null;
+      mark = null;
+      hour = null;
+      glycemia = null; 
+      markController.text = ' ';
+      glycemiaController.text = ' ';
     });
   }
 

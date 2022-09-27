@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/constants.dart';
 
 class DailyDataProvider with ChangeNotifier {
-  DailyData dailyData = DailyData();
+  static DailyData dailyData = DailyData();
   static late SharedPreferences prefs;
 
   static Future<SharedPreferences> initialize() async {
@@ -53,7 +53,7 @@ class DailyDataProvider with ChangeNotifier {
     if (responseAPI.statusCode == 201 || responseAPI.statusCode == 200) {
       var data = json.decode(responseAPI.body);
 
-      dailyData = DailyData.fromJson(data['data']); 
+      dailyData = DailyData.fromJson(data['data']);
 
       setDailyData(dailyData);
 
@@ -80,7 +80,7 @@ class DailyDataProvider with ChangeNotifier {
      * 
      * On enregistre donc le nouvelle Id généré par le backend et l'attribut createdAt
     */
-    // if (!isForCurrentDay()) { 
+    // if (!isForCurrentDay()) {
     //   prefs.setString('dailyDataId', dailyData.id);
     //   prefs.setString("dailyDataCreatedAt", dailyData.createdAt.toString());
     // }
@@ -93,7 +93,7 @@ class DailyDataProvider with ChangeNotifier {
     prefs.setString("dailyDataUpdatedAt", dailyData.updatedAt.toString());
   }
 
-  Future<void> getDailyData() async {
+  static Future<DailyData> getDailyData() async {
     // prefs = await SharedPreferences.getInstance();
     dailyData = DailyData.fromStorage(
       prefs.getString("dailyDataId") ?? "",
@@ -107,8 +107,9 @@ class DailyDataProvider with ChangeNotifier {
     if (!dailyData.isForCurrentDay()) {
       dailyData = DailyData();
     }
-    
-    notifyListeners();
+
+    return dailyData;
+    // notifyListeners();
   }
 
   bool isForCurrentDay() {
@@ -122,7 +123,7 @@ class DailyDataProvider with ChangeNotifier {
     if (!isForCurrentDay) {
       clearDailyDataCache();
     }
-     
+
     return isForCurrentDay;
   }
 

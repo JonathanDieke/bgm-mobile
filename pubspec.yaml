@@ -58,6 +58,8 @@ dev_dependencies:
   select_form_field: ^2.2.0
   just_the_tooltip: ^0.0.12 
   auto_validate: ^1.0.3
+  # awesome_dialog: ^2.2.1
+  # adaptive_dialog: ^1.8.0+1
   # smart_select: ^4.3.2
   # local_auth: ^2.1.2
 
@@ -75,6 +77,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/svg/
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

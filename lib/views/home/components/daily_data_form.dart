@@ -5,6 +5,7 @@ import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'package:provider/provider.dart';
 
+import '../../../components/button_widget.dart';
 import '../../../components/my_dialog_box.dart';
 import '../../../utils/helpers.dart';
 
@@ -25,24 +26,33 @@ class _DailyDataFormState extends State<DailyDataForm> {
   bool isLoading = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DailyDataProvider.getDailyData().then((dailyData) {
+      hyperglycemieController.text = dailyData.nbHyperglycemia.toString();
+      hypoglycemieController.text = dailyData.nbHypoglycemia.toString();
+      setState(() {
+        isSickController = TextEditingController(text: "${dailyData.isSick}");
+      }); 
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    // Provider.of<DailyDataProvider>(context, listen: true).getDailyData();
-
-    // print('reloading dail data FORM');
-    // print('daily data form notifié');
 
     return Consumer<DailyDataProvider>(
       builder: (context, dailyDataProvider, child) {
-        dailyDataProvider.getDailyData().then((value) {
-          // print("getDailyData :=> ${dailyDataProvider.toString()}");
-          hyperglycemieController.text =
-              dailyDataProvider.dailyData.nbHyperglycemia.toString();
-          hypoglycemieController.text =
-              dailyDataProvider.dailyData.nbHypoglycemia.toString();
-          isSickController = TextEditingController(
-              text: "${dailyDataProvider.dailyData.isSick}");
-        });
+        // DailyDataProvider.getDailyData().then((dailyData) {
+        //   hyperglycemieController.text = dailyData.nbHyperglycemia.toString();
+        //   hypoglycemieController.text = dailyData.nbHypoglycemia.toString();
+        //   setState(() {
+        //     isSickController =
+        //         TextEditingController(text: "${dailyData.isSick}");
+        //   });
+        //   print("is sick ? : ${dailyData.isSick}");
+        // });
         return Card(
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -55,7 +65,7 @@ class _DailyDataFormState extends State<DailyDataForm> {
               children: <Widget>[
                 // Titre
                 const Text(
-                  "Mon état physique",
+                  "Mon état physique quotidien",
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     fontSize: 20,
@@ -72,24 +82,13 @@ class _DailyDataFormState extends State<DailyDataForm> {
                         children: [
                           // Hyperglycémie
                           Expanded(
-                            // child: Column(
-                            //   children: [
-                            //     const Text("Nombre d'hyperglycémie :"),
-                            //     NumberInputPrefabbed
-                            //         .roundedEdgeButtons(
-                            //       controller:
-                            //           TextEditingController(),
-                            //       incDecBgColor: Colors.deepOrange
-                            //           .withOpacity(0.75),
-                            //       min: 0,
-                            //     ),
-                            //   ],
-                            // ),
                             child: TextFormField(
+                              enabled: !isLoading,
                               controller: hyperglycemieController,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
-                                      signed: false),
+                                signed: false,
+                              ),
                               decoration: const InputDecoration(
                                 alignLabelWithHint: true,
                                 labelText: "Nombre d'hyperglycémie :",
@@ -104,6 +103,7 @@ class _DailyDataFormState extends State<DailyDataForm> {
                           // Hypoglycémie
                           Expanded(
                             child: TextFormField(
+                              enabled: !isLoading,
                               controller: hypoglycemieController,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
@@ -126,6 +126,7 @@ class _DailyDataFormState extends State<DailyDataForm> {
                         children: [
                           Expanded(
                             child: SelectFormField(
+                              enabled: !isLoading,
                               controller: isSickController,
                               type: SelectFormFieldType
                                   .dropdown, // or can be dialog
@@ -145,7 +146,6 @@ class _DailyDataFormState extends State<DailyDataForm> {
                               ],
                               onChanged: (val) {
                                 isSickController.text = val;
-                                print(isSickController.text);
                               },
 
                               onSaved: (val) {},
@@ -176,76 +176,15 @@ class _DailyDataFormState extends State<DailyDataForm> {
                           )
                         ],
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // dailyDataProvider.clearDailyDataCache();
-                          dailyDataProvider.clearDailyDataCache();
-                        },
-                        child: const Text("clear SP"),
+                      const SizedBox(
+                        height: 24,
                       ),
                       //bouton de soumission
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 15),
-                        constraints: BoxConstraints(
-                          minWidth: screenSize.width,
-                          minHeight: 50.0,
-                        ),
-                        decoration: const BoxDecoration(
-                          color: Colors.deepOrange,
-                          borderRadius: BorderRadius.all(
-                            Radius.elliptical(10, 10),
-                          ),
-                        ),
-                        child: !isLoading
-                            // ignore: deprecated_member_use
-                            ? RaisedButton(
-                                onPressed: () {
-                                  FocusManager.instance.primaryFocus!.unfocus();
-                                  savingDailyData();
-                                },
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.elliptical(10, 10),
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(0.0),
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.deepOrange,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.elliptical(10, 10),
-                                    ),
-                                  ),
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                      minWidth: screenSize.width,
-                                      minHeight: 50.0,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      dailyDataProvider.isForCurrentDay()
-                                          ? "Mettre à jour"
-                                          : "Créer",
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const Center(
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.deepOrange,
-                                  strokeWidth: 5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                ),
-                              ),
+                      ButtonWidget(
+                        isLoading: isLoading,
+                        onPressed: () {
+                          savingDailyData();
+                        },
                       ),
                     ],
                   ),
@@ -261,6 +200,7 @@ class _DailyDataFormState extends State<DailyDataForm> {
   }
 
   void savingDailyData() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       isLoading = true;
     });
@@ -288,6 +228,23 @@ class _DailyDataFormState extends State<DailyDataForm> {
           return CustomDialogBox(
             title: data['result'] ? "Succès" : "Echec",
             description: data['message'],
+            footer: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
           );
         },
       );

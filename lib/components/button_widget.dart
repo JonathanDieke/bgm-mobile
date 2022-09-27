@@ -30,8 +30,8 @@ class _ButtonWidgetState extends State<ButtonWidget> {
       ),
       child: !widget.isLoading
           // ignore: deprecated_member_use
-          ? RaisedButton(
-              onPressed: widget.onPressed,
+          ? FlatButton(
+              onPressed: widget.onPressed, 
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.elliptical(10, 10),

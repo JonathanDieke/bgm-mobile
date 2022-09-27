@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:bgm/components/my_footer_component.dart';
 import 'package:bgm/utils/logo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../api/providers/daily_data_provider.dart';
+import '../../api/providers/user_provider.dart';
 
 class MySplashScreen extends StatefulWidget {
   const MySplashScreen({Key? key}) : super(key: key);
@@ -18,42 +19,29 @@ class _MySplashScreenState extends State<MySplashScreen>
   late AnimationController controller = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 2500));
   late Animation sizeAnimation = Tween<double>(begin: 270.0, end: 370.0)
-        .animate(CurvedAnimation(parent: controller, curve: Curves.bounceOut));
+      .animate(CurvedAnimation(parent: controller, curve: Curves.bounceOut));
 
   @override
   void initState() {
-    super.initState(); 
-    
+    super.initState();
+
     controller.addListener(() {
       setState(() {});
     });
 
     controller.forward();
 
-    Timer(const Duration(milliseconds: 3600), () {
-      Navigator.pushReplacementNamed(context, "/intro");
+    Timer(const Duration(milliseconds: 1200), () {
+      UserProvider.getUserStatus().then((String navigation) {
+        if (navigation == "intro") {
+          Navigator.pushReplacementNamed(context, "/$navigation");
+        } else if (navigation == "login") {
+          Navigator.pushReplacementNamed(context, "/$navigation");
+        } else if (navigation == "home") {
+          Navigator.pushReplacementNamed(context, "/$navigation");
+        }
+      });
     });
-
-    // AuthProvider authProvider =
-    //     Provider.of<AuthProvider>(context, listen: false);
-
-    // authProvider.getUserStatus().then((String navigation) {
-    //   if (navigation == "intro") {
-    //     Timer(Duration(milliseconds: 3600), () {
-    //       Navigator.pushReplacementNamed(context, "/$navigation");
-    //     });
-    //   }
-    //   if (navigation == "login") {
-    //     Timer(Duration(milliseconds: 3600), () {
-    //       Navigator.pushReplacementNamed(context, "/$navigation");
-    //     });
-    //   }
-    //   if (navigation == "home") {
-    //     Timer(Duration(milliseconds: 3600), () {
-    //       Navigator.pushReplacementNamed(context, "/$navigation");
-    //     });
-    //   }
-    // });
   }
 
   @override
@@ -95,7 +83,7 @@ class _MySplashScreenState extends State<MySplashScreen>
         height: height,
         // color: Colors.white,
         child: Center(
-          child: logo(width: width*.2, height: height*.2),
+          child: logo(width: width * .2, height: height * .2),
         ),
       ),
     );

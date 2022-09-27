@@ -16,7 +16,7 @@ class PageView2 extends StatelessWidget {
           margin: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
-          child: Image.asset("assets/images/slider.png"),
+          child: SvgPicture.asset("assets/svg/artificial-intelligence.svg"),
         ),
         Container(
           child: const Text(

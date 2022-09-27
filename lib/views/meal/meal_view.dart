@@ -54,11 +54,11 @@ class _MealViewState extends State<MealView> {
               ),
               //Cards contenant les différents repas checked when done
               const MealCard(
-                  "Petit déjeuner (entre 7h et 9h)", FontAwesomeIcons.check),
+                  "Petit déjeuner (entre 7h et 9h)", true),
               const MealCard(
-                  "Déjeuner (entre 12h et 13h)", FontAwesomeIcons.check),
+                  "Déjeuner (entre 12h et 13h)", true),
               const MealCard(
-                  "Diner (entre 18h et 20h)", FontAwesomeIcons.check),
+                  "Diner (entre 18h et 20h)", true),
               //Divider
               Container(
                 margin: EdgeInsets.symmetric(

@@ -3,8 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MealCard extends StatelessWidget {
   final String title;
-  final IconData icon;
-  const MealCard(this.title, this.icon, {Key? key}) : super(key: key);
+  final bool status;
+  const MealCard(this.title, this.status, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +31,24 @@ class MealCard extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: "Montserrat",
                 fontWeight: FontWeight.bold,
-                fontSize: 25,
+                fontSize: 20,
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 FaIcon(
-                  icon,
+                  status ? FontAwesomeIcons.check : FontAwesomeIcons.spinner,
                   size: 35,
-                  color: Colors.green[700],
+                  color: status ?Colors.green[700] : Colors.deepOrange[700],
                 ),
                 SizedBox(
-                  width: screenSize.width *.045,
+                  width: screenSize.width * .045,
                 ),
                 const FaIcon(
                   Icons.arrow_right_outlined,
-                  size: 30,
-                  color: Colors.black87, 
+                  size: 35,
+                  color: Colors.black87,
                 ),
               ],
             ),

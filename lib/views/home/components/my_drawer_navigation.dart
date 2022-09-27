@@ -1,4 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../../api/providers/user_provider.dart';
+import '../../../components/my_dialog_box.dart';
+// import 'package:awesome_dialog/awesome_dialog.dart';
 
 class MyDrawerNavigation extends StatefulWidget {
   MyDrawerNavigation({Key? key}) : super(key: key);
@@ -9,10 +16,21 @@ class MyDrawerNavigation extends StatefulWidget {
 
 class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
   final padding = const EdgeInsets.symmetric(horizontal: 20);
+
+  String pseudo = 'pseudo';
+  String id = 'id';
+
+  @override
+  void initState() {
+    super.initState();
+    dynamic user = UserProvider.getUser();
+    pseudo = user["userPseudo"];
+    // pseudo.split('-')
+    id = user["userId"];
+  }
+
   @override
   Widget build(BuildContext context) {
-    const name = 'Jonathan DIEKE';
-    const email = 'jonathan.dieke225@gmail.com';
     const urlImage =
         'https://media.defense.gov/2020/Feb/19/2002251686/-1/-1/0/200219-A-QY194-002.JPG';
     // 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80';
@@ -31,8 +49,8 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
           children: <Widget>[
             buildHeader(
               urlImage: urlImage,
-              name: name,
-              email: email,
+              pseudo: pseudo,
+              id: id,
               onClicked: () => print('ok'),
             ),
             Container(
@@ -53,13 +71,13 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
                     icon: Icons.person_outline_outlined,
                     onClicked: () => selectedItem(context, 1),
                   ),
-                  const SizedBox(height: 24),
-                  const Divider(color: Colors.white70),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  Divider(color: Colors.grey.shade700, height: 20),
+                  const SizedBox(height: 16),
                   buildMenuItem(
                     text: 'Déconnexion',
                     icon: Icons.logout_outlined,
-                    onClicked: () => selectedItem(context, 4),
+                    onClicked: () => selectedItem(context, 2),
                   ),
                 ],
               ),
@@ -72,15 +90,15 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
 
   Widget buildHeader({
     required String urlImage,
-    required String name,
-    required String email,
+    required String pseudo,
+    required String id,
     required VoidCallback onClicked,
   }) =>
       InkWell(
         onTap: onClicked,
         child: Container(
           padding: padding.add(
-            EdgeInsets.only(
+            const EdgeInsets.only(
               top: 40,
               bottom: 20,
             ),
@@ -88,18 +106,23 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
           child: Row(
             children: [
               CircleAvatar(radius: 30, backgroundImage: NetworkImage(urlImage)),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    email,
-                    style: TextStyle(fontSize: 12, color: Colors.white),
+                    pseudo,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    name,
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    id,
+                    style: const TextStyle(fontSize: 10, color: Colors.white),
                   ),
                 ],
               ),
@@ -160,12 +183,49 @@ class _MyDrawerNavigationState extends State<MyDrawerNavigation> {
 
     switch (index) {
       case 0:
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Container(child: Text('page 1')),
-        ));
+        // Navigator.pushNamed(context, '/home');
         break;
       case 1:
         Navigator.pushNamed(context, "/profile");
+        break;
+      case 2:
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomDialogBox(
+              title: "Déconnexion",
+              description: "Voulez-vous vraiment vous déconnecter ?",
+              footer: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      'Annuler',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      UserProvider.logout();
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                    child: const Text(
+                      'Confirmer',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
         break;
     }
   }

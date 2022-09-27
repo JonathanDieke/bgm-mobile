@@ -1,3 +1,4 @@
+import 'package:bgm/components/button_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -14,9 +15,15 @@ class SportFormComponent extends StatefulWidget {
 }
 
 class _SportFormComponentState extends State<SportFormComponent> {
-  int startHour = 0, endHour = 0, glycemiaBefore = 0, glycemiaAfter = 0;
+  int? startHour, endHour, glycemiaBefore, glycemiaAfter;
   bool isLoading = false;
-  String typeSport = "";
+  String? typeSport;
+
+  // TextEditingController typeSportController = TextEditingController();
+  // TextEditingController startHourController = TextEditingController();
+  // TextEditingController endHourController = TextEditingController();
+  TextEditingController glycemiaBeforeController = TextEditingController();
+  TextEditingController glycemiaAfterController = TextEditingController();
 
   List<DropdownMenuItem<int>> get sleepHourItems {
     return [for (var i = 0; i < 24; i++) i]
@@ -43,6 +50,13 @@ class _SportFormComponentState extends State<SportFormComponent> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    glycemiaBeforeController.dispose();
+    glycemiaAfterController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Container(
@@ -58,190 +72,147 @@ class _SportFormComponentState extends State<SportFormComponent> {
           // vertical: 8.0,
           horizontal: 15,
         ),
-        child: Form(
-          child: Column(
-            children: [
-              //Titre du formulaire
-              Container(
-                alignment: Alignment.center,
-                // margin: const EdgeInsets.only(top: 10),
-                child: Text(
-                  'Ajouter une activité physique'.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Montserrat",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              //Type d'activité
-              DropdownButtonFormField(
-                hint: const Text('Type d\'activité'),
-                isExpanded: true,
-                elevation: 5,
-                items: sportTypeItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    typeSport = newValue ?? "";
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Heure de début
-              DropdownButtonFormField(
-                hint: const Text('Heure de début'),
-                isExpanded: true,
-                elevation: 5,
-                // value: sleepStart,
-                items: sleepHourItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    startHour = newValue ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Heure de fin
-              DropdownButtonFormField(
-                hint: const Text('Heure de fin'),
-                isExpanded: true,
-                elevation: 5,
-                // value: sleepEnd,
-                items: sleepHourItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    endHour = newValue ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: false),
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Glycémie avant l\'activité (en mg/dL) ',
-                  hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    glycemiaBefore = int.parse(value);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: false),
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Glycémie après l\'activité (en mg/dL) ',
-                  hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    glycemiaAfter = int.parse(value);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Bouton de soumission
-              Container(
-                constraints: BoxConstraints(
-                  minWidth: screenSize.width,
-                  minHeight: 50.0,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.deepOrange,
-                  borderRadius: BorderRadius.all(
-                    Radius.elliptical(10, 10),
-                  ),
-                ),
-                child: !isLoading
-                    // ignore: deprecated_member_use
-                    ? RaisedButton(
-                        onPressed: () {
-                          savingSport();
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.elliptical(10, 10),
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(0.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.deepOrange,
-                            borderRadius: BorderRadius.all(
-                              Radius.elliptical(10, 10),
-                            ),
-                          ),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              minWidth: screenSize.width,
-                              minHeight: 50.0,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "Enregistrer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.deepOrange,
-                          strokeWidth: 5,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
+        child: ListView(
+          children: [
+            Form(
+              child: Column(
+                children: [
+                  //Titre du formulaire
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      'Ajouter une activité physique'.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.7),
+                        fontSize: screenSize.width < 460 ? 20 : 30,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Montserrat",
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  //Type d'activité
+                  DropdownButtonFormField(
+                    hint: const Text('Type d\'activité'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: typeSport,
+                    items: sportTypeItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading ? (String? newValue) {
+                      setState(() {
+                        typeSport = newValue ?? "";
+                      });
+                    } : null,
+                  ),
+                  const SizedBox(height: 20),
+                  //Heure de début
+                  DropdownButtonFormField(
+                    hint: const Text('Heure de début'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: startHour,
+                    items: sleepHourItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading ? (int? newValue) {
+                      setState(() {
+                        startHour = newValue ?? 0;
+                      });
+                    } : null,
+                  ),
+                  const SizedBox(height: 20),
+                  //Heure de fin
+                  DropdownButtonFormField(
+                    hint: const Text('Heure de fin'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: endHour,
+                    items: sleepHourItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading ? (int? newValue) {
+                      setState(() {
+                        endHour = newValue ?? 0;
+                      });
+                    } : null,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    enabled:  !isLoading,
+                    controller: glycemiaBeforeController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: false),
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Glycémie avant l\'activité (en mg/dL) ',
+                      hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        glycemiaBefore = int.parse(value);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    enabled:  !isLoading,
+                    controller: glycemiaAfterController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: false),
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Glycémie après l\'activité (en mg/dL) ',
+                      hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        glycemiaAfter = int.parse(value);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  //Bouton de soumission
+                  ButtonWidget(
+                    isLoading: isLoading,
+                    onPressed: () {
+                      savingSport();
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void savingSport() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       isLoading = true;
     });
@@ -250,12 +221,13 @@ class _SportFormComponentState extends State<SportFormComponent> {
         Provider.of<SportProvider>(context, listen: false);
 
     sportProvider.saveSport({
-      "type" : typeSport,
+      "type": typeSport,
       "start_hour": startHour,
       "end_hour": endHour,
       "glycemia_before": glycemiaBefore,
       "glycemia_after": glycemiaAfter
     }).then((Map<String, dynamic> data) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -271,10 +243,28 @@ class _SportFormComponentState extends State<SportFormComponent> {
             title:
                 data['result'] ? "Succès".toUpperCase() : "Echec".toUpperCase(),
             description: data['message'],
+            footer: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
           );
         },
       );
     }).onError((error, stackTrace) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -284,6 +274,18 @@ class _SportFormComponentState extends State<SportFormComponent> {
       showSnackbar(context,
           "Quelque chose s'est mal passé : veuilez réessayer ! \nSi le problème persiste, contactez le service support",
           duration: 5000);
+    });
+  }
+
+  reinitializeForm() {
+    setState(() {
+      startHour = null;
+      endHour = null;
+      typeSport = null;
+      glycemiaBefore = null;
+      glycemiaAfter = null;
+      glycemiaBeforeController.text = ' ';
+      glycemiaAfterController.text = ' ';
     });
   }
 }

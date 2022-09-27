@@ -4,18 +4,18 @@ import 'package:provider/provider.dart';
 import '../../../api/providers/user_provider.dart';
 import '../../../utils/helpers.dart';
 
-class FormComponent extends StatefulWidget {
-  const FormComponent({Key? key}) : super(key: key);
+class LoginFormComponent extends StatefulWidget {
+  const LoginFormComponent({Key? key}) : super(key: key);
 
   @override
-  State<FormComponent> createState() => _FormComponentState();
+  State<LoginFormComponent> createState() => _FormComponentState();
 }
 
-class _FormComponentState extends State<FormComponent> {
+class _FormComponentState extends State<LoginFormComponent> {
   TextEditingController loginTextController =
-      TextEditingController(text: 'admin');
+      TextEditingController(text: '');
   TextEditingController pwdTextController =
-      TextEditingController(text: 'password');
+      TextEditingController(text: '');
 
   bool isRememberMe = false,
       isAttemptLogin = false,
@@ -48,10 +48,10 @@ class _FormComponentState extends State<FormComponent> {
                 alignment: Alignment.topLeft,
                 margin: const EdgeInsets.only(top: 5),
                 child: Text(
-                  'Connexion'.toUpperCase(),
+                  'Se Connecter'.toUpperCase(),
                   style: TextStyle(
                     color: Colors.black.withOpacity(0.7),
-                    fontSize: 30,
+                    fontSize: 20,
                     fontWeight: FontWeight.w600,
                     fontFamily: "Montserrat",
                   ),
@@ -162,7 +162,7 @@ class _FormComponentState extends State<FormComponent> {
                           });
                         },
                       ),
-                      hintText: "Password",
+                      hintText: "Mot de passe",
                       hintStyle: const TextStyle(
                         fontSize: 16,
                         fontFamily: "Arial",
@@ -179,37 +179,37 @@ class _FormComponentState extends State<FormComponent> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      //Se souvenir de moi
-                      Checkbox(
-                        value: isRememberMe,
-                        activeColor: Colors.grey.shade300,
-                        checkColor: Colors.green,
-                        // focusColor: Colors.amber,
-                        // hoverColor: Colors.red,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isRememberMe = value!;
-                          });
-                        },
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isRememberMe = !isRememberMe;
-                          });
-                        },
-                        child: const Text(
-                          "Se souvenir de moi",
-                          style: TextStyle(
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     //Se souvenir de moi
+                  //     Checkbox(
+                  //       value: isRememberMe,
+                  //       activeColor: Colors.grey.shade300,
+                  //       checkColor: Colors.green,
+                  //       // focusColor: Colors.amber,
+                  //       // hoverColor: Colors.red,
+                  //       onChanged: (bool? value) {
+                  //         setState(() {
+                  //           isRememberMe = value!;
+                  //         });
+                  //       },
+                  //     ),
+                  //     GestureDetector(
+                  //       onTap: () {
+                  //         setState(() {
+                  //           isRememberMe = !isRememberMe;
+                  //         });
+                  //       },
+                  //       child: const Text(
+                  //         "Se souvenir de moi",
+                  //         style: TextStyle(
+                  //           fontFamily: "Montserrat",
+                  //           fontWeight: FontWeight.w300,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 25),
                   //Bouton de connexion
                   Container(

@@ -38,7 +38,7 @@ class UserProfile {
       String? discoverDate,
       String? startTreatmentDate,
       String? treatmentType,
-      String? phisicActivities,
+      String? physicActivities,
       String? job,
       bool? isAlcoholoc,
       bool? isSmoker,

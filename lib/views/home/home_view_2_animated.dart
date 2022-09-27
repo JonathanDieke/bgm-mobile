@@ -1,7 +1,6 @@
 import 'package:bgm/views/home/components/my_drawer_navigation.dart';
 import 'package:bgm/views/insulin/insulin_page.dart';
 import 'package:bgm/views/meal/meal_page.dart';
-import 'package:bgm/views/sleep/components/sleep_form.dart';
 import 'package:bgm/views/sleep/sleep_page.dart';
 import 'package:bgm/views/sport/sport_page.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    print(MediaQuery.of(context).size.width);
     return DefaultTabController(
       // Number of pages (or tab views)
       length: 5,
@@ -31,10 +29,11 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
         drawer: MyDrawerNavigation(),
         appBar: AppBar(
           centerTitle: true,
-          title: Text("BGM"),
+          title: const Text("BGM"),
           leading: IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
+              FocusManager.instance.primaryFocus?.unfocus();
               _scaffoldKey.currentState?.openDrawer();
             },
           ),
@@ -59,7 +58,10 @@ class _HomeView2AnimatedState extends State<HomeView2Animated> {
             ),
           ),
           bottom: TabBar(
-            isScrollable: screenSize.width > 460 ? true : false,
+            onTap: (int index) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            isScrollable: screenSize.width < 460 ? true : false,
             indicatorColor: Colors.white,
             indicatorWeight: 5,
             tabs: const [

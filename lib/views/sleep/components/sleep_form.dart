@@ -1,3 +1,5 @@
+import 'package:bgm/components/button_widget.dart';
+import 'package:bgm/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -14,8 +16,13 @@ class SleepForm extends StatefulWidget {
 }
 
 class _SleepFormState extends State<SleepForm> {
-  int startHour = 0, endHour = 0, glycemiaBefore = 0, glycemiaAfter = 0;
+  int? startHour, endHour, glycemiaBefore, glycemiaAfter;
   bool isLoading = false;
+
+  TextEditingController startHourController = TextEditingController();
+  TextEditingController endHourController = TextEditingController();
+  TextEditingController glycemiaBeforeController = TextEditingController();
+  TextEditingController glycemiaAfterController = TextEditingController();
 
   List<DropdownMenuItem<int>> get sleepHourItems {
     return [for (var i = 0; i < 24; i++) i]
@@ -26,6 +33,15 @@ class _SleepFormState extends State<SleepForm> {
           ),
         )
         .toList();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    glycemiaBeforeController.dispose();
+    glycemiaAfterController.dispose();
+    endHourController.dispose();
+    startHourController.dispose();
   }
 
   @override
@@ -44,169 +60,129 @@ class _SleepFormState extends State<SleepForm> {
           // vertical: 8.0,
           horizontal: 15,
         ),
-        child: Form(
-          child: Column(
-            children: [
-              //Titre du formulaire
-              Container(
-                alignment: Alignment.center,
-                // margin: const EdgeInsets.only(top: 10),
-                child: Text(
-                  'Ajouter un temps de sommeil'.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "Montserrat",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              //Heure de début
-              DropdownButtonFormField(
-                hint: const Text('Heure de début'),
-                isExpanded: true,
-                elevation: 5,
-                // value: sleepStart,
-                items: sleepHourItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    startHour = newValue ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Heure de fin
-              DropdownButtonFormField(
-                hint: const Text('Heure de fin'),
-                isExpanded: true,
-                elevation: 5,
-                // value: sleepEnd,
-                items: sleepHourItems,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-                onChanged: (int? newValue) {
-                  setState(() {
-                    endHour = newValue ?? 0;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: false),
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Glycémie avant le sommeil (en mg/dL) ',
-                  hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    glycemiaBefore = int.parse(value);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType:
-                    const TextInputType.numberWithOptions(signed: false),
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: 'Glycémie après le sommeil (en mg/dL) ',
-                  hintText: 'Example : 100',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    glycemiaAfter = int.parse(value);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              //Bouton de soumission
-              Container(
-                constraints: BoxConstraints(
-                  minWidth: screenSize.width,
-                  minHeight: 50.0,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.deepOrange,
-                  borderRadius: BorderRadius.all(
-                    Radius.elliptical(10, 10),
-                  ),
-                ),
-                child: !isLoading
-                    // ignore: deprecated_member_use
-                    ? RaisedButton(
-                        onPressed: () {
-                          savingSleep();
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.elliptical(10, 10),
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(0.0),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.deepOrange,
-                            borderRadius: BorderRadius.all(
-                              Radius.elliptical(10, 10),
-                            ),
-                          ),
-                          child: Container(
-                            constraints: BoxConstraints(
-                              minWidth: screenSize.width,
-                              minHeight: 50.0,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "Enregistrer",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.deepOrange,
-                          strokeWidth: 5,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
+        child: ListView(
+          children: [
+            Form(
+              child: Column(
+                children: [
+                  //Titre du formulaire
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      'Ajouter un temps de sommeil'.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.7),
+                        fontSize: screenSize.width < 460 ? 20 : 30,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Montserrat",
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  //Heure de début
+                  DropdownButtonFormField(
+                    hint: const Text('Heure de début'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: startHour,
+                    items: sleepHourItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading
+                        ? (int? newValue) {
+                            setState(() {
+                              startHour = newValue ?? 0;
+                            });
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+                  //Heure de fin
+                  DropdownButtonFormField(
+                    hint: const Text('Heure de fin'),
+                    isExpanded: true,
+                    elevation: 5,
+                    value: endHour,
+                    items: sleepHourItems,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onChanged: !isLoading
+                        ? (int? newValue) {
+                            setState(() {
+                              endHour = newValue ?? 0;
+                            });
+                          }
+                        : null,
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    enabled: !isLoading,
+                    controller: glycemiaBeforeController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: false),
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Glycémie avant le sommeil (en mg/dL) ',
+                      hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        glycemiaBefore = int.parse(value);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    enabled: !isLoading,
+                    controller: glycemiaAfterController,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(signed: false),
+                    decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      labelText: 'Glycémie après le sommeil (en mg/dL) ',
+                      hintText: 'Example : 100',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        glycemiaAfter = int.parse(value);
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  //Bouton de soumission
+                  ButtonWidget(
+                    isLoading: isLoading,
+                    onPressed: () {
+                      savingSleep();
+                    },
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void savingSleep() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       isLoading = true;
     });
@@ -220,6 +196,7 @@ class _SleepFormState extends State<SleepForm> {
       "glycemia_before": glycemiaBefore,
       "glycemia_after": glycemiaAfter
     }).then((Map<String, dynamic> data) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -235,10 +212,28 @@ class _SleepFormState extends State<SleepForm> {
             title:
                 data['result'] ? "Succès".toUpperCase() : "Echec".toUpperCase(),
             description: data['message'],
+            footer: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
           );
         },
       );
     }).onError((error, stackTrace) {
+      reinitializeForm();
       setState(() {
         isLoading = false;
       });
@@ -247,7 +242,20 @@ class _SleepFormState extends State<SleepForm> {
 
       showSnackbar(context,
           "Quelque chose s'est mal passé : veuilez réessayer ! \nSi le problème persiste, contactez le service support",
-          duration: 5000);
+          duration: Constants.durationShowSnackbar);
+    });
+  }
+
+  reinitializeForm() {
+    setState(() {
+      startHour = null;
+      endHour = null;
+      glycemiaBefore = null;
+      glycemiaAfter = null;
+      startHourController.text = ' ';
+      endHourController.text = ' ';
+      glycemiaBeforeController.text = ' ';
+      glycemiaAfterController.text = ' ';
     });
   }
 

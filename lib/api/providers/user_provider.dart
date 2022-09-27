@@ -28,7 +28,6 @@ class UserProvider extends ChangeNotifier {
     bool result = false;
     String message = '';
 
-    prefs = await SharedPreferences.getInstance();
     prefs.setBool("userAttemptedConnection", true);
 
     var responseAPI = await http.post(
@@ -67,6 +66,13 @@ class UserProvider extends ChangeNotifier {
     prefs.setString('userToken', user.token);
   }
 
+  static Map<String, String?> getUser() {
+    return {
+      "userId": prefs.getString('userId'),
+      "userPseudo": prefs.getString("userPseudo")
+    };
+  }
+
   static Future setUserProfile(UserProfile userProfile) async {
     bool result = false, unauthorized = false;
     String message = '';
@@ -75,7 +81,6 @@ class UserProvider extends ChangeNotifier {
     // final jsonUserProfile = jsonEncode(userProfile.toJson());
     var token = "Bearer ${prefs.getString('userToken')}";
 
-    print("before request : ${userProfile.toJson()}");
     var responseAPI = await http.patch(
       uri,
       headers: {
@@ -88,10 +93,8 @@ class UserProvider extends ChangeNotifier {
     if (responseAPI.statusCode == 200 || responseAPI.statusCode == 201) {
       var data = json.decode(responseAPI.body);
 
-      print("after request : $data");
       await prefs.setString('userProfile',
           jsonEncode(UserProfile.fromJson(data['data']).toJson()));
-      print("okokok");
 
       result = true;
       message = data['message'];
@@ -110,10 +113,35 @@ class UserProvider extends ChangeNotifier {
 
   static UserProfile getUserProfile() {
     final json = prefs.getString('userProfile');
-    print('json ${json}');
     return json == null
         ? UserProfile.empty()
         : UserProfile.fromJson(jsonDecode(json));
+  }
+
+  static Future<String> getUserStatus() async {
+    if (prefs.getBool("userAttemptedConnection") == null) {
+      //première ouverture de l'app
+      prefs.setBool("userAttemptedConnection", false);
+      return 'intro';
+    } else {
+      if (!prefs.getBool("userAttemptedConnection")!) {
+        //jamais essayé de s'authentifier
+        return 'intro';
+      } else {
+        // déja essayé de s'authentifier
+        if (prefs.getString("userToken") != null &&
+            prefs.getString("userToken")!.isNotEmpty) {
+          //effectivement authentifié
+          return 'home';
+        }
+        // déjà essayé de s'authentifier mais non auth
+        return "login";
+      }
+    }
+  }
+
+  static Future<void> logout() async {
+    await prefs.clear();
   }
 
   //fin : Make with love, by JonathanDieke
@@ -141,28 +169,4 @@ class UserProvider extends ChangeNotifier {
   //     headers: {"Authorization": token},
   //   );
   //   prefs.clear();
-  // }
-
-  // Future<String> getUserStatus() async {
-  //   prefs = await SharedPreferences.getInstance();
-
-  //   if (prefs.getBool("userAttemptedConnection") == null) {
-  //     //première ouverture de l'app
-  //     prefs.setBool("userAttemptedConnection", false);
-  //     return 'intro';
-  //   } else {
-  //     if (prefs.getBool("userAttemptedConnection") == false) {
-  //       //jamais essayé de s'authentifier
-  //       return 'intro';
-  //     } else {
-  //       // déja essayé de s'authentifier
-  //       if (prefs.getString("userToken") != null &&
-  //           prefs.getString("userToken").isNotEmpty) {
-  //         //déjà authentifié
-  //         return 'home';
-  //       }
-  //       // non auth
-  //       return "login";
-  //     }
-  //   }
   // }

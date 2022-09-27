@@ -36,7 +36,7 @@ class _ProfileViewState extends State<ProfileView> {
       builder: (context) => DefaultTabController(
         length: 1,
         child: Scaffold(
-          appBar: buildAppBar(context),
+          appBar: buildProfileAppBar(context),
           body: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             physics: const BouncingScrollPhysics(),
@@ -50,10 +50,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Année de naissance (aaaa/mm/jj) :',
                 text: userProfile.birthdate,
                 onChanged: (birthdate) {
-                  userProfile.birthdate = birthdate;
+                  setState(() {
+                    userProfile.birthdate = birthdate;
+                  });
                 },
               ),
               /**
@@ -67,19 +70,26 @@ class _ProfileViewState extends State<ProfileView> {
                   DropdownMenuItem(value: "male", child: Text("Masculin")),
                   DropdownMenuItem(value: "female", child: Text("Féminin")),
                 ],
-                onChanged: (String? gender) {
-                  userProfile.gender = gender ?? "";
-                },
+                onChanged: !isLoading
+                    ? (String? gender) {
+                        setState(() {
+                          userProfile.gender = gender ?? "";
+                        });
+                      }
+                    : null,
               ),
               /**
                * Groupe ethnique
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Groupe ethnique : ',
                 text: userProfile.ethnic,
                 onChanged: (String ethnic) {
-                  userProfile.ethnic = ethnic;
+                  setState(() {
+                    userProfile.ethnic = ethnic;
+                  });
                 },
               ),
               /**
@@ -93,9 +103,14 @@ class _ProfileViewState extends State<ProfileView> {
                   DropdownMenuItem(value: "false", child: Text("Non")),
                   DropdownMenuItem(value: "true", child: Text("Oui")),
                 ],
-                onChanged: (String? isAlcoholic) {
-                  userProfile.isAlcoholic = isAlcoholic == "false" ? false : true;
-                },
+                onChanged: !isLoading
+                    ? (String? isAlcoholic) {
+                        setState(() {
+                          userProfile.isAlcoholic =
+                              isAlcoholic == "false" ? false : true;
+                        });
+                      }
+                    : null,
               ),
               /**
                * Êtes vous fumeur ?
@@ -108,19 +123,27 @@ class _ProfileViewState extends State<ProfileView> {
                   DropdownMenuItem(value: "false", child: Text("Non")),
                   DropdownMenuItem(value: "true", child: Text("Oui")),
                 ],
-                onChanged: (String? isSmoker) {
-                  userProfile.isSmoker = isSmoker == "false" ? false : true;
-                },
+                onChanged: !isLoading
+                    ? (String? isSmoker) {
+                        setState(() {
+                          userProfile.isSmoker =
+                              isSmoker == "false" ? false : true;
+                        });
+                      }
+                    : null,
               ),
               /**
                * Poids
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Poids (en Kg) : ',
                 text: userProfile.weight.toString(),
                 onChanged: (String weight) {
-                  userProfile.weight = int.parse(weight);
+                  setState(() {
+                    userProfile.weight = int.parse(weight);
+                  });
                 },
               ),
               /**
@@ -128,10 +151,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Votre taille (en cm) : ',
                 text: userProfile.height.toString(),
                 onChanged: (String height) {
-                  userProfile.height = int.parse(height);
+                  setState(() {
+                    userProfile.height = int.parse(height);
+                  });
                 },
               ),
               /**
@@ -145,10 +171,17 @@ class _ProfileViewState extends State<ProfileView> {
                   DropdownMenuItem(value: "false", child: Text("Non")),
                   DropdownMenuItem(value: "true", child: Text("Oui")),
                 ],
-                onChanged: (String? isTense) {},
+                onChanged: !isLoading
+                    ? (String? isTense) {
+                        setState(() {
+                          userProfile.isTense =
+                              isTense == "false" ? false : true;
+                        });
+                      }
+                    : null,
               ),
               /**
-               * Êtes-vous hyper-tendu ? ?
+               * Type de diébète
                */
               SizedBox(height: spaceYBetweenFields),
               DropdownWidget(
@@ -159,19 +192,26 @@ class _ProfileViewState extends State<ProfileView> {
                   DropdownMenuItem(value: "type2", child: Text("Type 2")),
                   DropdownMenuItem(value: "type3", child: Text("Type 3")),
                 ],
-                onChanged: (String? diabetesType) {
-                  userProfile.diabetesType = diabetesType ?? "";
-                },
+                onChanged: !isLoading
+                    ? (String? diabetesType) {
+                        setState(() {
+                          userProfile.diabetesType = diabetesType ?? "";
+                        });
+                      }
+                    : null,
               ),
               /**
                * Date de découverte
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Date de découverte de la maladie (aaaa/mm/jj) : ',
                 text: userProfile.discoverDate,
                 onChanged: (String discoverDate) {
-                  userProfile.discoverDate = discoverDate;
+                  setState(() {
+                    userProfile.discoverDate = discoverDate;
+                  });
                 },
               ),
               /**
@@ -179,10 +219,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Date de début de traitement (aaaa/mm/jj) : ',
                 text: userProfile.startTreatmentDate,
                 onChanged: (String startTreatmentDate) {
-                  userProfile.startTreatmentDate = startTreatmentDate;
+                  setState(() {
+                    userProfile.startTreatmentDate = startTreatmentDate;
+                  });
                 },
               ),
               /**
@@ -190,10 +233,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Type de traitement : ',
                 text: userProfile.treatmentType,
                 onChanged: (String treatmentType) {
-                  userProfile.treatmentType = treatmentType;
+                  setState(() {
+                    userProfile.treatmentType = treatmentType;
+                  });
                 },
               ),
               /**
@@ -201,10 +247,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Activité physique pratiquée : ',
                 text: userProfile.physicActivities,
                 onChanged: (String physicActivities) {
-                  userProfile.physicActivities = physicActivities;
+                  setState(() {
+                    userProfile.physicActivities = physicActivities;
+                  });
                 },
               ),
               /**
@@ -212,10 +261,13 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Nombre de grossesses vécues : ',
                 text: userProfile.pregnancies.toString(),
-                onChanged: (String pregancies) {
-                  userProfile.pregnancies = int.parse(pregancies);
+                onChanged: (String pregnancies) {
+                  setState(() {
+                    userProfile.pregnancies = int.parse(pregnancies);
+                  });
                 },
               ),
               /**
@@ -223,13 +275,16 @@ class _ProfileViewState extends State<ProfileView> {
                */
               SizedBox(height: spaceYBetweenFields),
               TextFieldWidget(
+                enabled: !isLoading,
                 label: 'Profession : ',
                 text: userProfile.job,
                 onChanged: (String job) {
-                  userProfile.job = job;
+                  setState(() {
+                    userProfile.job = job;
+                  });
                 },
               ),
-      
+
               /**
                * Bouton de soumission
                */
@@ -249,13 +304,12 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void updateUserProfile() {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       isLoading = true;
     });
 
     UserProvider.setUserProfile(userProfile).then((data) {
-      print('ok mise à jour du user profile réussie !!'.toUpperCase());
-
       setState(() {
         isLoading = false;
       });
@@ -276,7 +330,7 @@ class _ProfileViewState extends State<ProfileView> {
       );
     }).catchError((error, error2) {
       print(
-          "Erreur mise à jour user profile :  ${error.toString()} --  \nerror2 : ${error2.toString()} ");
+          "Erreur mise à jour user profile :  ${error.toString()} --  \nErreur 2 : ${error2.toString()} ");
 
       setState(() {
         isLoading = false;

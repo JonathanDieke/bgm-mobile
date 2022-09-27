@@ -5,7 +5,7 @@ class DropdownWidget extends StatefulWidget {
   final List<DropdownMenuItem<String>> items;
   // final Icon icon ;
   final String initialValue;
-  final ValueChanged<String?> onChanged;
+  final ValueChanged<String?>? onChanged;
 
   const DropdownWidget({
     Key? key,
@@ -22,8 +22,7 @@ class DropdownWidget extends StatefulWidget {
 
 class _DropdownWidgetState extends State<DropdownWidget> {
   @override
-  Widget build(BuildContext context) {
-    print("\n\n\n\n\n\nintial value : ${widget.initialValue} -- \n\n\n\n\n\n");
+  Widget build(BuildContext context) { 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
